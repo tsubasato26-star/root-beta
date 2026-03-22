@@ -1,0 +1,223 @@
+"use client"
+
+import { useState, useRef, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { supabase } from "@/lib/supabase"
+
+export default function VideoPlayer({
+  url,
+  title,
+  likes,
+  id,
+  description,
+}: {
+  url: string
+  title: string
+  likes: number
+  id: string
+  description?: string
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const [likeCount, setLikeCount] = useState(likes ?? 0)
+  const [liked, setLiked] = useState(false)
+  const router = useRouter()
+const [tags, setTags] = useState<any[]>([])
+
+  const likeVideo = async () => {
+    if (!liked) {
+      setLiked(true)
+      setLikeCount(likeCount + 1)
+
+      await supabase.from("likes").insert({
+        video_id: id,
+        user_id: "demo-user",
+      })
+
+      await supabase
+        .from("videos")
+        .update({ likes: likeCount + 1 })
+        .eq("id", id)
+    } else {
+      setLiked(false)
+      setLikeCount(likeCount - 1)
+
+      await supabase
+        .from("likes")
+        .delete()
+        .eq("video_id", id)
+        .eq("user_id", "demo-user")
+
+      await supabase
+        .from("videos")
+        .update({ likes: likeCount - 1 })
+        .eq("id", id)
+    }
+  }
+
+const fetchTags = async () => {
+  const { data: videoTagRows, error } = await supabase
+    .from("video_tags")
+    .select("tag_id")
+    .eq("video_id", id)
+
+  if (error) {
+    console.log(error)
+    return
+  }
+
+  if (!videoTagRows || videoTagRows.length === 0) {
+    setTags([])
+    return
+  }
+
+  const tagIds = videoTagRows.map((row) => row.tag_id)
+
+  const { data: tagRows, error: tagError } = await supabase
+    .from("tags")
+    .select("id, name")
+    .in("id", tagIds)
+
+  if (tagError) {
+    console.log(tagError)
+    return
+  }
+
+  if (tagRows) {
+    setTags(tagRows)
+  }
+}
+
+  useEffect(() => {
+    fetchTags()
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (videoRef.current) {
+            if (entry.isIntersecting) {
+              videoRef.current.play()
+            } else {
+              videoRef.current.pause()
+            }
+          }
+        })
+      },
+      { threshold: 0.6 }
+    )
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current)
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current)
+      }
+    }
+  }, [])
+
+  return (
+    <div
+      style={{
+        height: "100vh",
+        width: "100%",
+        position: "relative",
+        backgroundColor: "black",
+      }}
+    >
+      <video
+        ref={videoRef}
+        src={url}
+        loop
+        muted
+        playsInline
+        style={{
+          height: "100%",
+          width: "100%",
+          objectFit: "cover",
+        }}
+      />
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: "60px",
+          left: "20px",
+          color: "white",
+          fontSize: "18px",
+        }}
+      >
+        {title}
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: "35px",
+          left: "20px",
+          color: "white",
+          fontSize: "14px",
+          maxWidth: "70%",
+        }}
+      >
+        {description}
+      </div>
+
+      <div
+  style={{
+    position: "absolute",
+    bottom: "10px",
+    left: "20px",
+    display: "flex",
+    gap: "8px",
+    flexWrap: "wrap",
+    maxWidth: "70%",
+  }}
+>
+  {tags.map((tag) => (
+    <span
+      key={tag.id}
+      onClick={() => router.push(`/tag/${tag.id}`)}
+      style={{
+        background: "rgba(255,255,255,0.15)",
+        color: "white",
+        padding: "4px 10px",
+        borderRadius: "999px",
+        fontSize: "12px",
+        cursor: "pointer",
+      }}
+    >
+      #{tag.name}
+    </span>
+  ))}
+</div>
+
+      <div
+        style={{
+          position: "absolute",
+          right: "20px",
+          bottom: "120px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "20px",
+        }}
+      >
+        <button
+          onClick={likeVideo}
+          style={{
+            fontSize: "30px",
+            background: "none",
+            border: "none",
+          }}
+        >
+          {liked ? "❤️" : "🤍"}
+        </button>
+
+        <div>{likeCount}</div>
+      </div>
+      
+    </div>
+    
+  )
+}
