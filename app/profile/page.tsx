@@ -1,12 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 
 export default function ProfilePage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
 
   const [loading, setLoading] = useState(true)
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
@@ -19,14 +18,16 @@ export default function ProfilePage() {
 
   useEffect(() => {
     loadProfilePage()
-  }, [searchParams])
+  }, [])
 
   const loadProfilePage = async () => {
     setLoading(true)
 
     const { data: userData } = await supabase.auth.getUser()
     const currentUser = userData.user
-    const queryUserId = searchParams.get("user")
+
+    const params = new URLSearchParams(window.location.search)
+    const queryUserId = params.get("user")
     const pageUserId = queryUserId || currentUser?.id || null
 
     setCurrentUserId(currentUser?.id ?? null)
@@ -46,7 +47,8 @@ export default function ProfilePage() {
       .maybeSingle()
 
     if (!profileData && currentUser && pageUserId === currentUser.id) {
-      const fallbackUsername = currentUser.email?.split("@")[0] || `user_${currentUser.id.slice(0, 6)}`
+      const fallbackUsername =
+        currentUser.email?.split("@")[0] || `user_${currentUser.id.slice(0, 6)}`
 
       await supabase.from("profiles").upsert({
         id: currentUser.id,
@@ -223,7 +225,14 @@ export default function ProfilePage() {
       <div style={{ height: "140px", background: "linear-gradient(135deg, #222, #444)" }} />
 
       <div style={{ padding: "0 16px 24px 16px", marginTop: "-24px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: "12px",
+          }}
+        >
           <button
             onClick={() => router.back()}
             style={{
@@ -283,8 +292,12 @@ export default function ProfilePage() {
 
           <div style={{ minWidth: 0, flex: 1, paddingTop: "10px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
-              <div style={{ fontSize: "22px", fontWeight: 700 }}>{profile?.username || "ユーザー"}</div>
-              <div style={{ color: "rgba(255,255,255,0.55)", fontSize: "13px" }}>認証予定位置</div>
+              <div style={{ fontSize: "22px", fontWeight: 700 }}>
+                {profile?.username || "ユーザー"}
+              </div>
+              <div style={{ color: "rgba(255,255,255,0.55)", fontSize: "13px" }}>
+                認証予定位置
+              </div>
             </div>
 
             <div style={{ color: "rgba(255,255,255,0.65)", marginTop: "4px", fontSize: "13px" }}>
@@ -303,14 +316,22 @@ export default function ProfilePage() {
         </div>
 
         {videos.length === 0 ? (
-          <div style={{ color: "rgba(255,255,255,0.65)", paddingTop: "20px" }}>まだ動画がありません</div>
+          <div style={{ color: "rgba(255,255,255,0.65)", paddingTop: "20px" }}>
+            まだ動画がありません
+          </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "4px" }}>
             {videos.map((video) => (
               <div key={video.id} style={{ position: "relative", aspectRatio: "9 / 16", background: "#111" }}>
                 <button
                   onClick={() => router.push(`/video/${video.id}`)}
-                  style={{ all: "unset", cursor: "pointer", display: "block", width: "100%", height: "100%" }}
+                  style={{
+                    all: "unset",
+                    cursor: "pointer",
+                    display: "block",
+                    width: "100%",
+                    height: "100%",
+                  }}
                 >
                   <video
                     src={video.video_url}
