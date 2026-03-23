@@ -4,25 +4,51 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 
-export default function LoginPage() {
+export default function SignupPage() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [username, setUsername] = useState("")
 
-  const signIn = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
+  const signUp = async () => {
+    if (!username.trim()) {
+      alert("ユーザーネームを入力してください")
+      return
+    }
+
+    if (password !== confirmPassword) {
+      alert("確認用パスワードが一致しません")
+      return
+    }
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     })
 
     if (error) {
       console.log(error)
-      alert("ログイン失敗")
+      alert("新規登録失敗")
       return
     }
 
-    alert("ログイン成功")
-    router.push("/")
+    const newUserId = data.user?.id
+
+    if (newUserId) {
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        id: newUserId,
+        username,
+        bio: "",
+      })
+
+      if (profileError) {
+        console.log(profileError)
+      }
+    }
+
+    alert("新規登録成功。確認メールから認証してください")
+    router.push("/login")
   }
 
   return (
@@ -59,18 +85,34 @@ export default function LoginPage() {
         style={{ width: "300px", padding: "10px", borderRadius: "8px", border: "none" }}
       />
 
+      <input
+        type="password"
+        placeholder="確認用パスワード"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        style={{ width: "300px", padding: "10px", borderRadius: "8px", border: "none" }}
+      />
+
+      <input
+        type="text"
+        placeholder="ユーザーネーム"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        style={{ width: "300px", padding: "10px", borderRadius: "8px", border: "none" }}
+      />
+
       <button
-        onClick={signIn}
+        onClick={signUp}
         style={{ width: "300px", padding: "10px", borderRadius: "10px", border: "none", cursor: "pointer" }}
       >
-        ログインする
+        新規登録する
       </button>
 
       <button
-        onClick={() => router.push("/signup")}
+        onClick={() => router.push("/login")}
         style={{ width: "300px", padding: "10px", borderRadius: "10px", border: "none", cursor: "pointer", background: "#333", color: "white" }}
       >
-        新規登録へ
+        ログインへ戻る
       </button>
     </div>
   )
