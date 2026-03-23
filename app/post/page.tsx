@@ -145,7 +145,24 @@ export default function PostPage() {
   }
 
   return (
-    <div>
+    <div style={{ padding: "20px", paddingTop: "70px" }}>
+      <button
+        onClick={() => router.back()}
+        style={{
+          position: "fixed",
+          top: "16px",
+          left: "16px",
+          border: "none",
+          borderRadius: "999px",
+          padding: "8px 14px",
+          background: "rgba(0,0,0,0.75)",
+          color: "white",
+          cursor: "pointer",
+        }}
+      >
+        戻る
+      </button>
+
       <h1>動画投稿</h1>
 
       <input

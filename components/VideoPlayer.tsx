@@ -10,12 +10,14 @@ export default function VideoPlayer({
   likes,
   id,
   description,
+  showBackButton = true,
 }: {
   url: string
   title: string
   likes: number
   id: string
   description?: string
+  showBackButton?: boolean
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [likeCount, setLikeCount] = useState(likes ?? 0)
@@ -165,22 +167,24 @@ export default function VideoPlayer({
         }}
       />
 
-      <button
-        onClick={() => router.back()}
-        style={{
-          position: "absolute",
-          top: "16px",
-          left: "16px",
-          border: "none",
-          borderRadius: "999px",
-          padding: "8px 14px",
-          background: "rgba(0,0,0,0.45)",
-          color: "white",
-          cursor: "pointer",
-        }}
-      >
-        戻る
-      </button>
+      {showBackButton ? (
+        <button
+          onClick={() => router.back()}
+          style={{
+            position: "absolute",
+            top: "16px",
+            left: "16px",
+            border: "none",
+            borderRadius: "999px",
+            padding: "8px 14px",
+            background: "rgba(0,0,0,0.45)",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          戻る
+        </button>
+      ) : null}
 
       <div
         onClick={() => ownerId && router.push(`/profile?user=${ownerId}`)}

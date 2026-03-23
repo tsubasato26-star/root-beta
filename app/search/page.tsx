@@ -1,10 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 
 export default function SearchPage() {
+  const router = useRouter()
   const [tags, setTags] = useState<any[]>([])
+  const [query, setQuery] = useState("")
 
   useEffect(() => {
     fetchTags()
@@ -27,6 +30,12 @@ export default function SearchPage() {
     }
   }
 
+  const filteredTags = useMemo(() => {
+    const trimmed = query.trim().toLowerCase()
+    if (!trimmed) return tags
+    return tags.filter((tag) => String(tag.name).toLowerCase().includes(trimmed))
+  }, [tags, query])
+
   return (
     <div
       style={{
@@ -34,9 +43,42 @@ export default function SearchPage() {
         background: "black",
         color: "white",
         padding: "20px",
+        paddingTop: "70px",
       }}
     >
+      <button
+        onClick={() => router.back()}
+        style={{
+          position: "fixed",
+          top: "16px",
+          left: "16px",
+          border: "none",
+          borderRadius: "999px",
+          padding: "8px 14px",
+          background: "rgba(0,0,0,0.75)",
+          color: "white",
+          cursor: "pointer",
+        }}
+      >
+        戻る
+      </button>
+
       <h1>検索</h1>
+
+      <input
+        type="text"
+        placeholder="タグを検索"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        style={{
+          width: "100%",
+          maxWidth: "420px",
+          padding: "10px 12px",
+          borderRadius: "10px",
+          border: "none",
+          marginTop: "8px",
+        }}
+      />
 
       <div
         style={{
@@ -46,17 +88,17 @@ export default function SearchPage() {
           marginTop: "20px",
         }}
       >
-        {tags.length === 0 ? (
+        {filteredTags.length === 0 ? (
           <div
             style={{
               color: "rgba(255,255,255,0.7)",
               marginTop: "20px",
             }}
           >
-            まだタグがありません
+            該当するタグがありません
           </div>
         ) : (
-          tags.map((tag) => (
+          filteredTags.map((tag) => (
             <a
               key={tag.id}
               href={`/tag/${tag.id}`}
