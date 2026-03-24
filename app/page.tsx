@@ -84,6 +84,9 @@ export default function Home() {
             gap: "10px",
           }}
         >
+          <a href="/" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+            ホーム
+          </a>
           <a href="/post" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
             投稿
           </a>
@@ -93,14 +96,29 @@ export default function Home() {
           <a href="/search" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
             検索
           </a>
+          <a href="/setting" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+            設定
+          </a>
+
           {isLoggedIn ? (
             <button
               onClick={logout}
-              style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black", border: "none", cursor: "pointer" }}
+              style={{
+                background: "white",
+                padding: "10px",
+                borderRadius: "10px",
+                color: "black",
+                border: "none",
+                cursor: "pointer",
+              }}
             >
               ログアウト
             </button>
-          ) : null}
+          ) : (
+            <a href="/login" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+              ログイン
+            </a>
+          )}
         </div>
       ) : null}
 
@@ -117,6 +135,7 @@ export default function Home() {
           color: "white",
           fontSize: "30px",
           border: "none",
+          cursor: "pointer",
         }}
       >
         +
