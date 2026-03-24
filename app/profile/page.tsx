@@ -15,10 +15,18 @@ export default function ProfilePage() {
   const [followerCount, setFollowerCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const [isFollowing, setIsFollowing] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     loadProfilePage()
+    checkUser()
   }, [])
+
+  const checkUser = async () => {
+    const { data } = await supabase.auth.getUser()
+    setIsLoggedIn(!!data.user)
+  }
 
   const loadProfilePage = async () => {
     setLoading(true)
@@ -203,6 +211,38 @@ export default function ProfilePage() {
     await loadProfilePage()
   }
 
+  const reportVideo = async (videoId: string) => {
+    if (!currentUserId || isOwnProfile) return
+
+    const confirmed = window.confirm("この動画を通報しますか？")
+    if (!confirmed) return
+
+    const { error } = await supabase.from("reports").insert({
+      video_id: videoId,
+      reporter_id: currentUserId,
+    })
+
+    if (error) {
+      console.log(error)
+      alert("通報失敗")
+      return
+    }
+
+    alert("通報しました")
+  }
+
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      console.log(error)
+      alert("ログアウト失敗")
+      return
+    }
+
+    router.push("/login")
+  }
+
   if (loading) {
     return (
       <div
@@ -221,16 +261,20 @@ export default function ProfilePage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "black", color: "white" }}>
+    <div style={{ minHeight: "100vh", background: "black", color: "white", position: "relative" }}>
       <div style={{ height: "140px", background: "linear-gradient(135deg, #222, #444)" }} />
 
-      <div style={{ padding: "0 16px 24px 16px", marginTop: "-24px" }}>
+      <div style={{ padding: "0 16px 24px 24px", marginTop: "-24px", position: "relative" }}>
         <div
           style={{
+            position: "absolute",
+            top: "16px",
+            left: "16px",
+            right: "16px",
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: "12px",
+            alignItems: "center",
+            zIndex: 20,
           }}
         >
           <button
@@ -366,7 +410,7 @@ export default function ProfilePage() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
-                      alert("通報は次でつける")
+                      reportVideo(video.id)
                     }}
                     style={{
                       position: "absolute",
@@ -389,6 +433,68 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+      {menuOpen ? (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "100px",
+            right: "20px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            zIndex: 30,
+          }}
+        >
+          <a href="/" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+            ホーム
+          </a>
+          <a href="/post" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+            投稿
+          </a>
+          <a href="/profile" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+            プロフィール
+          </a>
+          <a href="/search" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+            検索
+          </a>
+          <a href="/setting" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+            設定
+          </a>
+          {isLoggedIn ? (
+            <button
+              onClick={logout}
+              style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black", border: "none", cursor: "pointer" }}
+            >
+              ログアウト
+            </button>
+          ) : (
+            <a href="/login" style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}>
+              ログイン
+            </a>
+          )}
+        </div>
+      ) : null}
+
+      <button
+        onClick={() => setMenuOpen(!menuOpen)}
+        style={{
+          position: "fixed",
+          bottom: "30px",
+          right: "20px",
+          width: "60px",
+          height: "60px",
+          borderRadius: "50%",
+          backgroundColor: "#ff2d55",
+          color: "white",
+          fontSize: "30px",
+          border: "none",
+          cursor: "pointer",
+          zIndex: 30,
+        }}
+      >
+        +
+      </button>
     </div>
   )
 }
