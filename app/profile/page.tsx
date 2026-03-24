@@ -264,17 +264,17 @@ export default function ProfilePage() {
     <div style={{ minHeight: "100vh", background: "black", color: "white", position: "relative" }}>
       <div style={{ height: "140px", background: "linear-gradient(135deg, #222, #444)" }} />
 
-      <div style={{ padding: "0 16px 24px 24px", marginTop: "-24px", position: "relative" }}>
+      <div style={{ padding: "0 16px 24px 16px", marginTop: "-24px", position: "relative" }}>
         <div
           style={{
-            position: "absolute",
+            position: "fixed",
             top: "16px",
             left: "16px",
             right: "16px",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            zIndex: 20,
+            zIndex: 40,
           }}
         >
           <button
@@ -322,7 +322,7 @@ export default function ProfilePage() {
           ) : null}
         </div>
 
-        <div style={{ display: "flex", gap: "16px", alignItems: "flex-start", marginBottom: "14px" }}>
+        <div style={{ display: "flex", gap: "16px", alignItems: "flex-start", marginTop: "56px", marginBottom: "14px" }}>
           <div
             style={{
               width: "88px",
