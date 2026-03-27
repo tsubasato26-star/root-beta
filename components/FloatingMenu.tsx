@@ -27,7 +27,10 @@ export default function FloatingMenu() {
       return
     }
 
-    router.push("/login")
+    setIsLoggedIn(false)
+    setMenuOpen(false)
+    router.replace("/login")
+    router.refresh()
   }
 
   return (

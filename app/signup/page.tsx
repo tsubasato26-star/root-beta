@@ -47,8 +47,8 @@ export default function SignupPage() {
       }
     }
 
-    alert("新規登録成功。確認メールから認証してください")
-    router.push("/login")
+    alert("新規登録成功。続けてRootの説明を見てください")
+    router.push("/onboarding")
   }
 
   return (
