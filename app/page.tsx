@@ -29,16 +29,20 @@ export default function Home() {
     <div style={{ height: "100vh", overflowY: "scroll", scrollSnapType: "y mandatory" }}>
       {videos.length === 0 ? (
         <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "rgba(255,255,255,0.7)",
-          }}
-        >
-          まだ動画がありません
-        </div>
+  style={{
+    minHeight: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "rgba(255,255,255,0.85)",
+    textAlign: "center",
+    padding: "24px",
+    lineHeight: 1.8,
+    whiteSpace: "pre-line",
+  }}
+>
+  {"最初の一歩を投稿しよう\n\n・思いつきでもOK\n・途中でもOK\n・実験でもOK\n\nRootは「完成前」を見せる場所"}
+</div>
       ) : (
         videos.map((video) => (
           <div key={video.id} style={{ scrollSnapAlign: "start" }}>
