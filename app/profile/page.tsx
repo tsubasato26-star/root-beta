@@ -13,10 +13,12 @@ export default function ProfilePage() {
   const [targetUserId, setTargetUserId] = useState<string | null>(null)
   const [profile, setProfile] = useState<any>(null)
   const [videos, setVideos] = useState<any[]>([])
+  const [projects, setProjects] = useState<any[]>([])
+  const [selectedProject, setSelectedProject] = useState<any>(null)
   const [followerCount, setFollowerCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const [isFollowing, setIsFollowing] = useState(false)
-    const [editMenuOpen, setEditMenuOpen] = useState(false)
+  const [editMenuOpen, setEditMenuOpen] = useState(false)
   const [editField, setEditField] = useState<"username" | "bio" | null>(null)
   const [editValue, setEditValue] = useState("")
 
@@ -32,10 +34,23 @@ export default function ProfilePage() {
 
     const params = new URLSearchParams(window.location.search)
     const queryUserId = params.get("user")
+    const queryProjectId = params.get("project")
     const pageUserId = queryUserId || currentUser?.id || null
 
     setCurrentUserId(currentUser?.id ?? null)
     setTargetUserId(pageUserId)
+
+        if (queryProjectId) {
+      const { data: projectData } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("id", queryProjectId)
+        .maybeSingle()
+
+      setSelectedProject(projectData || null)
+    } else {
+      setSelectedProject(null)
+    }
 
     if (!pageUserId) {
       setProfile(null)
@@ -76,11 +91,29 @@ export default function ProfilePage() {
 
     setProfile(profileData)
 
-    const { data: videoData, error: videoError } = await supabase
+        const { data: projectRows, error: projectRowsError } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("user_id", pageUserId)
+      .order("created_at", { ascending: false })
+
+    if (projectRowsError) {
+      console.log(projectRowsError)
+    } else {
+      setProjects(projectRows || [])
+    }
+
+     let videoQuery = supabase
       .from("videos")
       .select("*")
       .eq("user_id", pageUserId)
       .order("created_at", { ascending: false })
+
+    if (queryProjectId) {
+      videoQuery = videoQuery.eq("project_id", queryProjectId)
+    }
+
+    const { data: videoData, error: videoError } = await videoQuery
 
     if (videoError) {
       console.log(videoError)
@@ -354,6 +387,64 @@ export default function ProfilePage() {
         <div style={{ display: "flex", gap: "18px", marginBottom: "20px", color: "rgba(255,255,255,0.85)" }}>
           <div>{followerCount} フォロワー</div>
           {isOwnProfile ? <div>{followingCount} フォロー中</div> : null}
+        </div>
+
+                <div style={{ marginBottom: "20px" }}>
+          <div style={{ fontSize: "18px", fontWeight: 700, marginBottom: "10px" }}>
+            プロジェクト
+          </div>
+
+          {selectedProject ? (
+            <div style={{ marginBottom: "12px", color: "rgba(255,255,255,0.8)" }}>
+              現在表示中: {selectedProject.name}
+            </div>
+          ) : null}
+
+          {projects.length === 0 ? (
+            <div style={{ color: "rgba(255,255,255,0.65)" }}>まだプロジェクトがありません</div>
+          ) : (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
+              {projects.map((project) => (
+                <button
+                  key={project.id}
+                  onClick={() => router.push(`/profile?user=${targetUserId}&project=${project.id}`)}
+                  style={{
+                    textAlign: "left",
+                    padding: "14px",
+                    borderRadius: "16px",
+                    border: "none",
+                    background: "rgba(255,255,255,0.08)",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  <div style={{ fontWeight: 700, marginBottom: "6px" }}>
+                    {project.name} {project.is_completed ? "✓" : ""}
+                  </div>
+                  <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>
+                    {project.description || "説明なし"}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {selectedProject ? (
+            <button
+              onClick={() => router.push(`/profile?user=${targetUserId}`)}
+              style={{
+                marginTop: "12px",
+                padding: "10px 14px",
+                borderRadius: "999px",
+                border: "none",
+                background: "rgba(255,255,255,0.12)",
+                color: "white",
+                cursor: "pointer",
+              }}
+            >
+              プロジェクト絞り込みを解除
+            </button>
+          ) : null}
         </div>
 
         {videos.length === 0 ? (

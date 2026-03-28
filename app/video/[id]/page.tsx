@@ -13,6 +13,7 @@ export default function VideoDetailPage() {
 
   const [tagsByVideoId, setTagsByVideoId] = useState<Record<string, any[]>>({})
   const [relatedVideos, setRelatedVideos] = useState<any[]>([])
+  const [projectNamesById, setProjectNamesById] = useState<Record<string, string>>({})
   const containerRef = useRef<HTMLDivElement | null>(null)
   const currentIndexRef = useRef(0)
   const isAnimatingRef = useRef(false)
@@ -63,6 +64,27 @@ export default function VideoDetailPage() {
     }
 
     if (!vids || vids.length === 0) return
+
+    const uniqueProjectIds = [...new Set(vids.map((v) => v.project_id).filter(Boolean))]
+
+    if (uniqueProjectIds.length > 0) {
+      const { data: projectRows, error: projectError } = await supabase
+        .from("projects")
+        .select("id, name")
+        .in("id", uniqueProjectIds)
+
+      if (projectError) {
+        console.log(projectError)
+      } else if (projectRows) {
+        const projectMap: Record<string, string> = {}
+        projectRows.forEach((project) => {
+          projectMap[project.id] = project.name
+        })
+        setProjectNamesById(projectMap)
+      }
+    } else {
+      setProjectNamesById({})
+    }
 
     const tagMap: Record<string, any[]> = {}
 
@@ -153,12 +175,28 @@ export default function VideoDetailPage() {
               likes={item.likes}
               id={item.id}
               description={item.description}
+              postType={item.post_type}
             />
 
             <div style={{ padding: "20px", color: "white", background: "black" }}>
               <h2>{item.title}</h2>
               <p>{item.description}</p>
-
+              {item.project_id && projectNamesById[item.project_id] ? (
+                <button
+                  onClick={() => router.push(`/profile?user=${item.user_id}&project=${item.project_id}`)}
+                  style={{
+                    marginBottom: "12px",
+                    padding: "8px 12px",
+                    borderRadius: "999px",
+                    border: "none",
+                    background: "rgba(255,255,255,0.12)",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  プロジェクト: {projectNamesById[item.project_id]}
+                </button>
+              ) : null}
               <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                 {(tagsByVideoId[item.id] || []).map((tag) => (
                   <span

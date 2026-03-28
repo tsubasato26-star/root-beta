@@ -17,10 +17,41 @@ export default function PostPage() {
   const [level3Tags, setLevel3Tags] = useState<any[]>([])
   const [level3, setLevel3] = useState<string[]>([])
   const [postType, setPostType] = useState("experiment")
+  const [projects, setProjects] = useState<any[]>([])
+  const [projectMode, setProjectMode] = useState<"existing" | "new">("existing")
+  const [selectedProjectId, setSelectedProjectId] = useState("")
+  const [newProjectName, setNewProjectName] = useState("")
+  const [newProjectDescription, setNewProjectDescription] = useState("")
 
   useEffect(() => {
     fetchTags()
+    fetchProjects()
   }, [])
+
+  const fetchProjects = async () => {
+    const { data: userData } = await supabase.auth.getUser()
+    const user = userData.user
+
+    if (!user) return
+
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      console.log(error)
+      return
+    }
+
+    if (data) {
+      setProjects(data)
+      if (data.length > 0 && !selectedProjectId) {
+        setSelectedProjectId(data[0].id)
+      }
+    }
+  }
 
   const fetchTags = async () => {
     const { data, error } = await supabase
@@ -93,6 +124,38 @@ export default function PostPage() {
       return
     }
 
+    let projectIdToUse = selectedProjectId
+
+    if (projectMode === "existing") {
+      if (!projectIdToUse) {
+        alert("プロジェクトを選択してください")
+        return
+      }
+    } else {
+      if (!newProjectName.trim()) {
+        alert("新しいプロジェクト名を入力してください")
+        return
+      }
+
+      const { data: newProject, error: projectError } = await supabase
+        .from("projects")
+        .insert({
+          user_id: user.id,
+          name: newProjectName,
+          description: newProjectDescription,
+        })
+        .select()
+        .single()
+
+      if (projectError) {
+        console.log(projectError)
+        alert("プロジェクト作成失敗")
+        return
+      }
+
+      projectIdToUse = newProject.id
+    }
+
     const fileName = Date.now() + "-" + file.name
 
     const { error: uploadError } = await supabase.storage
@@ -117,6 +180,7 @@ export default function PostPage() {
         video_url: videoUrl,
         user_id: user.id,
         post_type: postType,
+        project_id: projectIdToUse,
       })
       .select()
       .single()
@@ -125,6 +189,12 @@ export default function PostPage() {
       console.log(insertError)
       alert("DB保存失敗")
       return
+    }
+        if (postType === "complete" && projectIdToUse) {
+      await supabase
+        .from("projects")
+        .update({ is_completed: true })
+        .eq("id", projectIdToUse)
     }
 
     const tagIds = [level1, level2, ...level3].filter(Boolean)
@@ -169,6 +239,83 @@ export default function PostPage() {
       <h1>動画投稿</h1>
 
       <h3>投稿タイプ</h3>
+
+            <h3>プロジェクト</h3>
+
+      <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
+        <button
+          onClick={() => setProjectMode("existing")}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "999px",
+            border: "none",
+            background: projectMode === "existing" ? "#ff2d55" : "#ddd",
+            color: projectMode === "existing" ? "white" : "black",
+            cursor: "pointer",
+          }}
+        >
+          既存プロジェクト
+        </button>
+
+        <button
+          onClick={() => setProjectMode("new")}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "999px",
+            border: "none",
+            background: projectMode === "new" ? "#ff2d55" : "#ddd",
+            color: projectMode === "new" ? "white" : "black",
+            cursor: "pointer",
+          }}
+        >
+          新しく作る
+        </button>
+      </div>
+
+      {projectMode === "existing" ? (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "16px" }}>
+          {projects.length === 0 ? (
+            <div style={{ color: "rgba(255,255,255,0.7)" }}>まだプロジェクトがありません</div>
+          ) : (
+            projects.map((project) => {
+              const selected = selectedProjectId === project.id
+              return (
+                <div
+                  key={project.id}
+                  onClick={() => setSelectedProjectId(project.id)}
+                  style={{
+                    padding: "10px 14px",
+                    borderRadius: "14px",
+                    cursor: "pointer",
+                    background: selected ? "#ff2d55" : "#eee",
+                    color: selected ? "white" : "black",
+                  }}
+                >
+                  {project.name}
+                  {project.is_completed ? " ✓" : ""}
+                </div>
+              )
+            })
+          )}
+        </div>
+      ) : (
+        <div style={{ marginBottom: "16px" }}>
+          <input
+            placeholder="新しいプロジェクト名"
+            value={newProjectName}
+            onChange={(e) => setNewProjectName(e.target.value)}
+          />
+
+          <br />
+          <br />
+
+          <textarea
+            placeholder="プロジェクト説明（任意）"
+            value={newProjectDescription}
+            onChange={(e) => setNewProjectDescription(e.target.value)}
+          />
+        </div>
+      )}
 
       <div style={{ display: "flex", gap: "10px" }}>
         <button
