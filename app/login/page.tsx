@@ -21,7 +21,6 @@ export default function LoginPage() {
       return
     }
 
-    alert("ログイン成功")
     router.push("/")
   }
 
