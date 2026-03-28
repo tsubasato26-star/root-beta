@@ -606,7 +606,6 @@ export default function ProfilePage() {
         </div>
       ) : null}
 
-
       <FloatingMenu />
     </div>
   )
