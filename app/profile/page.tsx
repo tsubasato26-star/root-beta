@@ -341,8 +341,15 @@ export default function ProfilePage() {
         </div>
 
         {videos.length === 0 ? (
-          <div style={{ color: "rgba(255,255,255,0.65)", paddingTop: "20px" }}>
-            まだ動画がありません
+          <div
+            style={{
+              color: "rgba(255,255,255,0.85)",
+              paddingTop: "20px",
+              lineHeight: 1.9,
+              whiteSpace: "pre-line",
+            }}
+          >
+            {"最初の一歩を投稿しよう\n\n・思いつきでもOK\n・途中でもOK\n・実験でもOK\n\nRootは『完成前』を見せる場所"}
           </div>
         ) : (
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "4px" }}>
