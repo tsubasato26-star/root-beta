@@ -148,7 +148,7 @@ export default function VideoPlayer({
   return (
     <div
       style={{
-        height: "100vh",
+        height: "100dvh",
         width: "100%",
         position: "relative",
         backgroundColor: "black",
@@ -172,7 +172,7 @@ export default function VideoPlayer({
           onClick={() => router.back()}
           style={{
             position: "absolute",
-            top: "16px",
+            top: "calc(env(safe-area-inset-top) + 16px)",
             left: "16px",
             border: "none",
             borderRadius: "999px",
@@ -190,7 +190,7 @@ export default function VideoPlayer({
         onClick={() => ownerId && router.push(`/profile?user=${ownerId}`)}
         style={{
           position: "absolute",
-          bottom: "88px",
+          bottom: "calc(env(safe-area-inset-bottom) + 128px)",
           left: "20px",
           color: "white",
           display: "flex",
@@ -206,7 +206,7 @@ export default function VideoPlayer({
       <div
         style={{
           position: "absolute",
-          bottom: "60px",
+          bottom: "calc(env(safe-area-inset-bottom) + 100px)",
           left: "20px",
           color: "white",
           fontSize: "18px",
@@ -218,7 +218,7 @@ export default function VideoPlayer({
       <div
         style={{
           position: "absolute",
-          bottom: "35px",
+          bottom: "calc(env(safe-area-inset-bottom) + 70px)",
           left: "20px",
           color: "white",
           fontSize: "14px",
@@ -231,7 +231,7 @@ export default function VideoPlayer({
       <div
         style={{
           position: "absolute",
-          bottom: "10px",
+          bottom: "calc(env(safe-area-inset-bottom) + 28px)",
           left: "20px",
           display: "flex",
           gap: "8px",
@@ -261,7 +261,7 @@ export default function VideoPlayer({
         style={{
           position: "absolute",
           right: "20px",
-          bottom: "120px",
+          bottom: "calc(env(safe-area-inset-bottom) + 180px)",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

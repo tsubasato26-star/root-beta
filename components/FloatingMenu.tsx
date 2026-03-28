@@ -39,7 +39,7 @@ export default function FloatingMenu() {
         <div
           style={{
             position: "fixed",
-            bottom: "100px",
+            bottom: "calc(env(safe-area-inset-bottom) + 100px)",
             right: "20px",
             display: "flex",
             flexDirection: "column",
@@ -107,7 +107,7 @@ export default function FloatingMenu() {
         onClick={() => setMenuOpen(!menuOpen)}
         style={{
           position: "fixed",
-          bottom: "30px",
+          bottom: "calc(env(safe-area-inset-bottom) + 30px)",
           right: "20px",
           width: "60px",
           height: "60px",

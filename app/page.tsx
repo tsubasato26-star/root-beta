@@ -62,7 +62,7 @@ export default function Home() {
         }
       }}
       style={{
-        height: "100vh",
+        height: "100dvh",
         overflowY: "scroll",
         scrollSnapType: "y mandatory",
         overscrollBehavior: "none",
@@ -71,7 +71,7 @@ export default function Home() {
       {videos.length === 0 ? (
         <div
   style={{
-    minHeight: "100vh",
+    minHeight: "100dvh",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -86,7 +86,7 @@ export default function Home() {
 </div>
       ) : (
         videos.map((video) => (
-          <div key={video.id} style={{ scrollSnapAlign: "start", height: "100vh" }}>
+          <div key={video.id} style={{ scrollSnapAlign: "start", height: "100dvh" }}>
             <VideoPlayer
               url={video.video_url}
               title={video.title}
