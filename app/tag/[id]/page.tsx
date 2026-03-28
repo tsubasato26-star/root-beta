@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import VideoPlayer from "@/components/VideoPlayer"
@@ -11,6 +11,9 @@ export default function TagPage() {
 
   const [videos, setVideos] = useState<any[]>([])
   const [tagName, setTagName] = useState("")
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const currentIndexRef = useRef(0)
+  const isAnimatingRef = useRef(false)
 
   const params = useParams<{ id: string }>()
   const tagId = Array.isArray(params?.id) ? params.id[0] : params?.id
@@ -72,14 +75,43 @@ export default function TagPage() {
     }
   }
 
+  const scrollToIndex = (index: number) => {
+    if (!containerRef.current) return
+
+    const clampedIndex = Math.max(0, Math.min(index, videos.length - 1))
+    currentIndexRef.current = clampedIndex
+
+    containerRef.current.scrollTo({
+      top: clampedIndex * window.innerHeight,
+      behavior: "smooth",
+    })
+
+    isAnimatingRef.current = true
+    window.setTimeout(() => {
+      isAnimatingRef.current = false
+    }, 450)
+  }
+
   return (
     <div
+      ref={containerRef}
+      onWheel={(e) => {
+        e.preventDefault()
+        if (isAnimatingRef.current || videos.length === 0) return
+
+        if (e.deltaY > 0) {
+          scrollToIndex(currentIndexRef.current + 1)
+        } else if (e.deltaY < 0) {
+          scrollToIndex(currentIndexRef.current - 1)
+        }
+      }}
       style={{
         height: "100vh",
         overflowY: "scroll",
         scrollSnapType: "y mandatory",
         backgroundColor: "black",
         position: "relative",
+        overscrollBehavior: "none",
       }}
     >
       <button
@@ -120,6 +152,7 @@ export default function TagPage() {
           key={video.id}
           style={{
             scrollSnapAlign: "start",
+            height: "100vh",
           }}
         >
           <VideoPlayer
