@@ -95,6 +95,7 @@ export default function Home() {
               id={video.id}
               description={video.description}
               showBackButton={false}
+              postType={video.post_type}
             />
           </div>
         ))

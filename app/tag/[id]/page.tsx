@@ -179,6 +179,8 @@ export default function TagPage() {
               likes={video.likes}
               id={video.id}
               description={video.description}
+              postType={video.post_type}
+
             />
           </div>
         ))

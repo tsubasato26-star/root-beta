@@ -16,6 +16,7 @@ export default function PostPage() {
   const [level2, setLevel2] = useState("")
   const [level3Tags, setLevel3Tags] = useState<any[]>([])
   const [level3, setLevel3] = useState<string[]>([])
+  const [postType, setPostType] = useState("experiment")
 
   useEffect(() => {
     fetchTags()
@@ -115,6 +116,7 @@ export default function PostPage() {
         description,
         video_url: videoUrl,
         user_id: user.id,
+        post_type: postType,
       })
       .select()
       .single()
@@ -165,6 +167,40 @@ export default function PostPage() {
       </button>
 
       <h1>動画投稿</h1>
+
+      <h3>投稿タイプ</h3>
+
+      <div style={{ display: "flex", gap: "10px" }}>
+        <button
+          onClick={() => setPostType("experiment")}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "999px",
+            border: "none",
+            background: postType === "experiment" ? "#ff2d55" : "#ddd",
+            color: postType === "experiment" ? "white" : "black",
+            cursor: "pointer",
+          }}
+        >
+          実験 / 過程
+        </button>
+
+        <button
+          onClick={() => setPostType("complete")}
+          style={{
+            padding: "8px 16px",
+            borderRadius: "999px",
+            border: "none",
+            background: postType === "complete" ? "#ff2d55" : "#ddd",
+            color: postType === "complete" ? "white" : "black",
+            cursor: "pointer",
+          }}
+        >
+          完成
+        </button>
+      </div>
+
+      <br />
 
       <input
         placeholder="タイトル"

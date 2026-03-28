@@ -10,6 +10,7 @@ export default function VideoPlayer({
   likes,
   id,
   description,
+  postType,
   showBackButton = true,
 }: {
   url: string
@@ -17,6 +18,7 @@ export default function VideoPlayer({
   likes: number
   id: string
   description?: string
+  postType?: string
   showBackButton?: boolean
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null)
@@ -154,6 +156,22 @@ export default function VideoPlayer({
         backgroundColor: "black",
       }}
     >
+      {postType && (
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(env(safe-area-inset-top) + 60px)",
+            left: "16px",
+            background: "rgba(0,0,0,0.6)",
+            padding: "4px 10px",
+            borderRadius: "8px",
+            fontSize: "12px",
+            color: "white",
+          }}
+        >
+          {postType === "complete" ? "完成" : "実験 / 仮定"}
+        </div>
+      )}
       <video
         ref={videoRef}
         src={url}
