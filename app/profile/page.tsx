@@ -16,6 +16,9 @@ export default function ProfilePage() {
   const [followerCount, setFollowerCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const [isFollowing, setIsFollowing] = useState(false)
+    const [editMenuOpen, setEditMenuOpen] = useState(false)
+  const [editField, setEditField] = useState<"username" | "bio" | null>(null)
+  const [editValue, setEditValue] = useState("")
 
   useEffect(() => {
     loadProfilePage()
@@ -122,19 +125,29 @@ export default function ProfilePage() {
 
   const isOwnProfile = !!currentUserId && currentUserId === targetUserId
 
-  const editProfile = async () => {
-    if (!currentUserId || !profile) return
+    const openEditMenu = () => {
+    setEditMenuOpen(true)
+    setEditField(null)
+    setEditValue("")
+  }
 
-    const newUsername = window.prompt("ユーザーネーム", profile.username || "")
-    if (newUsername === null) return
+  const startEditField = (field: "username" | "bio" | "avatar") => {
+    if (field === "avatar") {
+      alert("ベータ版では使えません")
+      return
+    }
 
-    const newBio = window.prompt("ユーザーコメント", profile.bio || "")
-    if (newBio === null) return
+    setEditField(field)
+    setEditValue(field === "username" ? profile?.username || "" : profile?.bio || "")
+  }
+
+  const saveEditField = async () => {
+    if (!currentUserId || !profile || !editField) return
 
     const { error } = await supabase.from("profiles").upsert({
       id: currentUserId,
-      username: newUsername,
-      bio: newBio,
+      username: editField === "username" ? editValue : profile.username || "",
+      bio: editField === "bio" ? editValue : profile.bio || "",
       avatar_url: profile.avatar_url || null,
     })
 
@@ -144,6 +157,9 @@ export default function ProfilePage() {
       return
     }
 
+    setEditMenuOpen(false)
+    setEditField(null)
+    setEditValue("")
     await loadProfilePage()
   }
 
@@ -274,7 +290,7 @@ export default function ProfilePage() {
 
           {isOwnProfile ? (
             <button
-              onClick={editProfile}
+              onClick={openEditMenu}
               style={{
                 background: "rgba(255,255,255,0.12)",
                 color: "white",
@@ -421,6 +437,175 @@ export default function ProfilePage() {
           </div>
         )}
       </div>
+
+            {editMenuOpen ? (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.65)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 60,
+            padding: "20px",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "420px",
+              background: "#111",
+              borderRadius: "20px",
+              padding: "20px",
+              boxSizing: "border-box",
+            }}
+          >
+            {editField === null ? (
+              <>
+                <div style={{ fontSize: "22px", fontWeight: 700, marginBottom: "16px" }}>
+                  プロフィール編集
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <button
+                    onClick={() => startEditField("username")}
+                    style={{
+                      padding: "14px",
+                      borderRadius: "12px",
+                      border: "none",
+                      background: "rgba(255,255,255,0.08)",
+                      color: "white",
+                      cursor: "pointer",
+                      textAlign: "left",
+                    }}
+                  >
+                    ユーザーネーム
+                  </button>
+
+                  <button
+                    onClick={() => startEditField("bio")}
+                    style={{
+                      padding: "14px",
+                      borderRadius: "12px",
+                      border: "none",
+                      background: "rgba(255,255,255,0.08)",
+                      color: "white",
+                      cursor: "pointer",
+                      textAlign: "left",
+                    }}
+                  >
+                    ユーザーコメント
+                  </button>
+
+                  <button
+                    onClick={() => startEditField("avatar")}
+                    style={{
+                      padding: "14px",
+                      borderRadius: "12px",
+                      border: "none",
+                      background: "rgba(255,255,255,0.08)",
+                      color: "white",
+                      cursor: "pointer",
+                      textAlign: "left",
+                    }}
+                  >
+                    ユーザーアイコン
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setEditMenuOpen(false)}
+                  style={{
+                    marginTop: "18px",
+                    width: "100%",
+                    padding: "12px",
+                    borderRadius: "12px",
+                    border: "none",
+                    background: "#333",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  閉じる
+                </button>
+              </>
+            ) : (
+              <>
+                <div style={{ fontSize: "22px", fontWeight: 700, marginBottom: "16px" }}>
+                  {editField === "username" ? "ユーザーネーム編集" : "ユーザーコメント編集"}
+                </div>
+
+                {editField === "username" ? (
+                  <input
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "12px",
+                      border: "none",
+                      marginBottom: "14px",
+                      boxSizing: "border-box",
+                    }}
+                  />
+                ) : (
+                  <textarea
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    rows={5}
+                    style={{
+                      width: "100%",
+                      padding: "12px",
+                      borderRadius: "12px",
+                      border: "none",
+                      marginBottom: "14px",
+                      boxSizing: "border-box",
+                      resize: "vertical",
+                    }}
+                  />
+                )}
+
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button
+                    onClick={() => {
+                      setEditField(null)
+                      setEditValue("")
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: "12px",
+                      borderRadius: "12px",
+                      border: "none",
+                      background: "#333",
+                      color: "white",
+                      cursor: "pointer",
+                    }}
+                  >
+                    戻る
+                  </button>
+
+                  <button
+                    onClick={saveEditField}
+                    style={{
+                      flex: 1,
+                      padding: "12px",
+                      borderRadius: "12px",
+                      border: "none",
+                      background: "#ff2d55",
+                      color: "white",
+                      cursor: "pointer",
+                    }}
+                  >
+                    保存
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      ) : null}
+
 
       <FloatingMenu />
     </div>
