@@ -42,7 +42,7 @@ export default function Home() {
     isAnimatingRef.current = true
     window.setTimeout(() => {
       isAnimatingRef.current = false
-    }, 450)
+    }, 700)
   }
 
   return (
@@ -64,6 +64,7 @@ export default function Home() {
       style={{
         height: "100dvh",
         overflowY: "scroll",
+        overflowX: "hidden",
         scrollSnapType: "y mandatory",
         overscrollBehavior: "none",
       }}

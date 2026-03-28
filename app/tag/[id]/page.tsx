@@ -89,7 +89,7 @@ export default function TagPage() {
     isAnimatingRef.current = true
     window.setTimeout(() => {
       isAnimatingRef.current = false
-    }, 450)
+    }, 700)
   }
 
   return (
@@ -108,6 +108,7 @@ export default function TagPage() {
       style={{
         height: "100vh",
         overflowY: "scroll",
+        overflowX: "hidden",
         scrollSnapType: "y mandatory",
         backgroundColor: "black",
         position: "relative",
@@ -147,23 +148,41 @@ export default function TagPage() {
         #{tagName}
       </div>
 
-      {videos.map((video) => (
+      {videos.length === 0 ? (
         <div
-          key={video.id}
           style={{
-            scrollSnapAlign: "start",
-            height: "100vh",
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "rgba(255,255,255,0.85)",
+            textAlign: "center",
+            padding: "24px",
+            lineHeight: 1.8,
+            whiteSpace: "pre-line",
           }}
         >
-          <VideoPlayer
-            url={video.video_url}
-            title={video.title}
-            likes={video.likes}
-            id={video.id}
-            description={video.description}
-          />
+          {"このタグにはまだ投稿がありません\n\n最初の一歩を投稿しよう\n・思いつきでもOK\n・途中でもOK\n・実験でもOK"}
         </div>
-      ))}
+      ) : (
+        videos.map((video) => (
+          <div
+            key={video.id}
+            style={{
+              scrollSnapAlign: "start",
+              height: "100vh",
+            }}
+          >
+            <VideoPlayer
+              url={video.video_url}
+              title={video.title}
+              likes={video.likes}
+              id={video.id}
+              description={video.description}
+            />
+          </div>
+        ))
+      )}
 
       <FloatingMenu />
     </div>
