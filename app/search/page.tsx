@@ -51,14 +51,18 @@ export default function SearchPage() {
         onClick={() => router.back()}
         style={{
           position: "fixed",
-          top: "16px",
+          top: "calc(env(safe-area-inset-top) + 16px)",
           left: "16px",
-          border: "none",
+          border: "1px solid rgba(255,255,255,0.18)",
           borderRadius: "999px",
           padding: "8px 14px",
-          background: "rgba(0,0,0,0.75)",
+          background: "rgba(0,0,0,0.45)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
           color: "white",
           cursor: "pointer",
+          zIndex: 20,
         }}
       >
         戻る
@@ -104,12 +108,24 @@ export default function SearchPage() {
               key={tag.id}
               href={`/tag/${tag.id}`}
               style={{
-                background: tag.level === 1 ? "#ff2d55" : tag.level === 2 ? "#333" : "#555",
+                background: tag.level === 1
+                  ? "linear-gradient(135deg, #2563eb, #38bdf8)"
+                  : tag.level === 2
+                  ? "linear-gradient(135deg, rgba(14,165,233,0.55), rgba(56,189,248,0.28))"
+                  : "rgba(255,255,255,0.10)",
                 color: "white",
                 padding: "8px 14px",
                 borderRadius: "999px",
                 textDecoration: "none",
                 fontSize: "14px",
+                border: tag.level === 3 ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(255,255,255,0.10)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: tag.level === 3
+                  ? "0 6px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.18)"
+                  : tag.level === 1
+                  ? "0 8px 22px rgba(37,99,235,0.28), inset 0 1px 0 rgba(255,255,255,0.18)"
+                  : "0 8px 22px rgba(14,165,233,0.16), inset 0 1px 0 rgba(255,255,255,0.16)",
               }}
             >
               #{tag.name}

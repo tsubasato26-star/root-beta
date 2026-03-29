@@ -182,7 +182,15 @@ export default function VideoPlayer({
             position: "absolute",
             top: "calc(env(safe-area-inset-top) + 60px)",
             left: "16px",
-            background: "rgba(0,0,0,0.6)",
+            background: postType === "complete"
+              ? "linear-gradient(135deg, #3b82f6, #38bdf8)"
+              : "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.18)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            boxShadow: postType === "complete"
+              ? "0 8px 22px rgba(59,130,246,0.22), inset 0 1px 0 rgba(255,255,255,0.18)"
+              : "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
             padding: "4px 10px",
             borderRadius: "8px",
             fontSize: "12px",
@@ -213,10 +221,13 @@ export default function VideoPlayer({
             position: "absolute",
             top: "calc(env(safe-area-inset-top) + 16px)",
             left: "16px",
-            border: "none",
+            border: "1px solid rgba(255,255,255,0.18)",
             borderRadius: "999px",
             padding: "8px 14px",
             background: "rgba(0,0,0,0.45)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
             color: "white",
             cursor: "pointer",
           }}
@@ -283,7 +294,11 @@ export default function VideoPlayer({
             key={tag.id}
             onClick={() => router.push(`/tag/${tag.id}`)}
             style={{
-              background: "rgba(255,255,255,0.15)",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.18)",
               color: "white",
               padding: "4px 10px",
               borderRadius: "999px",
@@ -310,15 +325,24 @@ export default function VideoPlayer({
         <button
           onClick={likeVideo}
           style={{
-            fontSize: "30px",
+            fontSize: "28px",
             background: "none",
             border: "none",
+            color: "white",
+            cursor: "pointer",
           }}
         >
           {liked ? "❤️" : "🤍"}
         </button>
 
-        <div>{likeCount}</div>
+        <div
+          style={{
+            color: "white",
+            fontSize: "14px",
+          }}
+        >
+          {likeCount}
+        </div>
       </div>
     </div>
   )

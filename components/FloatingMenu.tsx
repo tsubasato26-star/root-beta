@@ -49,31 +49,81 @@ export default function FloatingMenu() {
         >
           <a
             href="/"
-            style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}
+            style={{
+              padding: "10px 14px",
+              borderRadius: "12px",
+              color: "white",
+              textDecoration: "none",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+            }}
           >
             ホーム
           </a>
           <a
             href="/post"
-            style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}
+            style={{
+              padding: "10px 14px",
+              borderRadius: "12px",
+              color: "white",
+              textDecoration: "none",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+            }}
           >
             投稿
           </a>
           <a
             href="/profile"
-            style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}
+            style={{
+              padding: "10px 14px",
+              borderRadius: "12px",
+              color: "white",
+              textDecoration: "none",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+            }}
           >
             プロフィール
           </a>
           <a
             href="/search"
-            style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}
+            style={{
+              padding: "10px 14px",
+              borderRadius: "12px",
+              color: "white",
+              textDecoration: "none",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+            }}
           >
             検索
           </a>
           <a
             href="/setting"
-            style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}
+            style={{
+              padding: "10px 14px",
+              borderRadius: "12px",
+              color: "white",
+              textDecoration: "none",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+            }}
           >
             設定
           </a>
@@ -82,11 +132,14 @@ export default function FloatingMenu() {
             <button
               onClick={logout}
               style={{
-                background: "white",
-                padding: "10px",
-                borderRadius: "10px",
-                color: "black",
-                border: "none",
+                padding: "10px 14px",
+                borderRadius: "12px",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "rgba(255,255,255,0.08)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
                 cursor: "pointer",
               }}
             >
@@ -95,7 +148,17 @@ export default function FloatingMenu() {
           ) : (
             <a
               href="/login"
-              style={{ background: "white", padding: "10px", borderRadius: "10px", color: "black" }}
+              style={{
+                padding: "10px 14px",
+                borderRadius: "12px",
+                color: "white",
+                textDecoration: "none",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+              }}
             >
               ログイン
             </a>
@@ -112,10 +175,13 @@ export default function FloatingMenu() {
           width: "60px",
           height: "60px",
           borderRadius: "50%",
-          backgroundColor: "#ff2d55",
+          border: "1px solid rgba(255,255,255,0.18)",
+          background: "linear-gradient(135deg, #3b82f6, #38bdf8)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.25)",
           color: "white",
           fontSize: "30px",
-          border: "none",
           cursor: "pointer",
           zIndex: 30,
         }}
