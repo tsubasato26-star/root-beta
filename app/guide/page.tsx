@@ -43,10 +43,13 @@ export default function GuidePage() {
           position: "fixed",
           top: "calc(env(safe-area-inset-top) + 16px)",
           left: "16px",
-          border: "none",
+          border: "1px solid rgba(255,255,255,0.18)",
           borderRadius: "999px",
           padding: "8px 14px",
-          background: "rgba(0,0,0,0.75)",
+          background: "rgba(0,0,0,0.45)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
           color: "white",
           cursor: "pointer",
           zIndex: 20,
@@ -77,8 +80,11 @@ export default function GuidePage() {
               textAlign: "left",
               padding: "12px 14px",
               borderRadius: "14px",
-              border: "none",
+              border: "1px solid rgba(255,255,255,0.18)",
               background: "rgba(255,255,255,0.08)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.18)",
               color: "white",
               cursor: "pointer",
             }}
@@ -89,7 +95,15 @@ export default function GuidePage() {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-        <section id="about" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="about" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>Rootとは</h2>
           <p>
             完成じゃなくて、途中を見せるSNS。
@@ -98,7 +112,15 @@ export default function GuidePage() {
           </p>
         </section>
 
-        <section id="basic" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="basic" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>基本の使い方</h2>
           <p>
             （投稿する側）<br/>
@@ -111,7 +133,15 @@ export default function GuidePage() {
           </p>
         </section>
 
-        <section id="scroll" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="scroll" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>縦と横の見方</h2>
           <p>
             縦にスライドすると動画が切り替わります。<br/>
@@ -121,7 +151,15 @@ export default function GuidePage() {
           </p>
         </section>
 
-        <section id="posting" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="posting" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>投稿の考え方</h2>
           <p>
             Rootで大事なのは「完成」ではなく「過程」です。<br/>
@@ -130,7 +168,15 @@ export default function GuidePage() {
           </p>
         </section>
 
-        <section id="tags" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="tags" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>タグの意味</h2>
           <p>
             タグは動画を分類するためのものです。<br/>
@@ -139,7 +185,15 @@ export default function GuidePage() {
           </p>
         </section>
 
-        <section id="projects" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="projects" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>プロジェクトの意味</h2>
           <p>
             プロジェクトは「一つの目的に向かって続いている活動のまとまり」です。<br/>
@@ -148,7 +202,15 @@ export default function GuidePage() {
           </p>
         </section>
 
-        <section id="profile" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="profile" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>プロフィールの見方</h2>
           <p>
             プロフィールでは、その人の投稿を確認できます。<br/>
@@ -157,7 +219,15 @@ export default function GuidePage() {
           </p>
         </section>
 
-        <section id="rs" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="rs" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>RSについて</h2>
           <p>
             RS（RootStone）はRoot内で使われるポイントのようなものです。<br/>
@@ -165,7 +235,15 @@ export default function GuidePage() {
           </p>
         </section>
 
-        <section id="faq" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
+        <section id="faq" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
           <h2 style={{ marginTop: 0 }}>よくある疑問</h2>
           <p>
             今後よくある疑問をここに追加していきます。

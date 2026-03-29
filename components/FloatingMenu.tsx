@@ -54,11 +54,11 @@ export default function FloatingMenu() {
               borderRadius: "12px",
               color: "white",
               textDecoration: "none",
-              background: "rgba(255,255,255,0.08)",
+              background: "rgba(0,0,0,0.45)",
               border: "1px solid rgba(255,255,255,0.18)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
             }}
           >
             ホーム
@@ -70,11 +70,11 @@ export default function FloatingMenu() {
               borderRadius: "12px",
               color: "white",
               textDecoration: "none",
-              background: "rgba(255,255,255,0.08)",
+              background: "rgba(0,0,0,0.45)",
               border: "1px solid rgba(255,255,255,0.18)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
             }}
           >
             投稿
@@ -86,11 +86,11 @@ export default function FloatingMenu() {
               borderRadius: "12px",
               color: "white",
               textDecoration: "none",
-              background: "rgba(255,255,255,0.08)",
+              background: "rgba(0,0,0,0.45)",
               border: "1px solid rgba(255,255,255,0.18)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
             }}
           >
             プロフィール
@@ -102,11 +102,11 @@ export default function FloatingMenu() {
               borderRadius: "12px",
               color: "white",
               textDecoration: "none",
-              background: "rgba(255,255,255,0.08)",
+              background: "rgba(0,0,0,0.45)",
               border: "1px solid rgba(255,255,255,0.18)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
             }}
           >
             検索
@@ -118,11 +118,11 @@ export default function FloatingMenu() {
               borderRadius: "12px",
               color: "white",
               textDecoration: "none",
-              background: "rgba(255,255,255,0.08)",
+              background: "rgba(0,0,0,0.45)",
               border: "1px solid rgba(255,255,255,0.18)",
               backdropFilter: "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
             }}
           >
             設定
@@ -136,10 +136,10 @@ export default function FloatingMenu() {
                 borderRadius: "12px",
                 color: "white",
                 border: "1px solid rgba(255,255,255,0.18)",
-                background: "rgba(255,255,255,0.08)",
+                background: "rgba(0,0,0,0.45)",
                 backdropFilter: "blur(12px)",
                 WebkitBackdropFilter: "blur(12px)",
-                boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+                boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
                 cursor: "pointer",
               }}
             >
@@ -153,11 +153,11 @@ export default function FloatingMenu() {
                 borderRadius: "12px",
                 color: "white",
                 textDecoration: "none",
-                background: "rgba(255,255,255,0.08)",
+                background: "rgba(0,0,0,0.45)",
                 border: "1px solid rgba(255,255,255,0.18)",
                 backdropFilter: "blur(12px)",
                 WebkitBackdropFilter: "blur(12px)",
-                boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.22)",
+                boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
               }}
             >
               ログイン
