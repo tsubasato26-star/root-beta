@@ -118,34 +118,48 @@ export default function VideoPlayer({
   }
 
   useEffect(() => {
-    fetchTags()
-    fetchOwner()
+  const target = videoRef.current
+  if (!target) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (videoRef.current) {
-            if (entry.isIntersecting) {
-              videoRef.current.play()
-            } else {
-              videoRef.current.pause()
-            }
-          }
-        })
-      },
-      { threshold: 0.6 }
-    )
+  let cancelled = false
 
-    if (videoRef.current) {
-      observer.observe(videoRef.current)
-    }
-
-    return () => {
-      if (videoRef.current) {
-        observer.unobserve(videoRef.current)
+  const tryPlay = async () => {
+    try {
+      await target.play()
+    } catch (error: any) {
+      if (error?.name !== "AbortError") {
+        console.log(error)
       }
     }
-  }, [])
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.target !== target || cancelled) return
+
+        if (entry.isIntersecting) {
+          void tryPlay()
+        } else {
+          if (!target.paused) {
+            target.pause()
+          }
+        }
+      })
+    },
+    { threshold: 0.6 }
+  )
+
+  observer.observe(target)
+
+  return () => {
+    cancelled = true
+    observer.disconnect()
+    if (!target.paused) {
+      target.pause()
+    }
+  }
+}, [])
 
   return (
     <div
@@ -154,6 +168,7 @@ export default function VideoPlayer({
         width: "100%",
         position: "relative",
         backgroundColor: "black",
+        overflow: "hidden",
       }}
     >
       {postType && (
@@ -173,11 +188,12 @@ export default function VideoPlayer({
         </div>
       )}
       <video
-        ref={videoRef}
-        src={url}
-        loop
-        muted
-        playsInline
+  ref={videoRef}
+  src={url}
+  loop
+  muted
+  playsInline
+  preload="metadata"
         style={{
           height: "100%",
           width: "100%",
