@@ -199,6 +199,25 @@ export default function TagPage() {
       }}
     >
       <button
+        onClick={() => router.push("/guide")}
+        style={{
+          position: "fixed",
+          top: "calc(env(safe-area-inset-top) + 16px)",
+          right: "16px",
+          zIndex: 20,
+          border: "none",
+          borderRadius: "999px",
+          padding: "8px 14px",
+          background: "rgba(0,0,0,0.6)",
+          color: "white",
+          fontSize: "16px",
+          cursor: "pointer",
+        }}
+      >
+        ?
+      </button>
+
+      <button
         onClick={() => router.back()}
         style={{
           position: "fixed",
