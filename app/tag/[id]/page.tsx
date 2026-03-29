@@ -11,6 +11,8 @@ export default function TagPage() {
 
   const [videos, setVideos] = useState<any[]>([])
   const [tagName, setTagName] = useState("")
+  const [siblingTags, setSiblingTags] = useState<any[]>([])
+  const [currentTagIndex, setCurrentTagIndex] = useState(-1)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const currentIndexRef = useRef(0)
   const isAnimatingRef = useRef(false)
@@ -22,6 +24,8 @@ export default function TagPage() {
     if (!tagId) return
     fetchTagName()
     fetchTagVideos()
+    fetchSiblingTags()
+    currentIndexRef.current = 0
   }, [tagId])
 
   const fetchTagName = async () => {
@@ -38,6 +42,80 @@ export default function TagPage() {
 
     if (data) {
       setTagName(data.name)
+    }
+  }
+
+  const fetchSiblingTags = async () => {
+    const { data: currentTag, error: currentTagError } = await supabase
+      .from("tags")
+      .select("id, parent_id, level")
+      .eq("id", tagId)
+      .single()
+
+    if (currentTagError) {
+      console.log(currentTagError)
+      return
+    }
+
+    if (!currentTag) {
+      setSiblingTags([])
+      setCurrentTagIndex(-1)
+      return
+    }
+
+    let query = supabase
+      .from("tags")
+      .select("id, name, parent_id, level")
+      .eq("level", currentTag.level)
+
+    if (currentTag.parent_id) {
+      query = query.eq("parent_id", currentTag.parent_id)
+    } else {
+      query = query.is("parent_id", null)
+    }
+
+    const { data: siblings, error: siblingsError } = await query
+
+    if (siblingsError) {
+      console.log(siblingsError)
+      return
+    }
+
+    if (siblings) {
+      const siblingIds = siblings.map((tag) => tag.id)
+
+      const { data: videoTagRows, error: videoTagError } = await supabase
+        .from("video_tags")
+        .select("tag_id")
+        .in("tag_id", siblingIds)
+
+      if (videoTagError) {
+        console.log(videoTagError)
+      }
+
+      const countMap: Record<string, number> = {}
+      siblingIds.forEach((id) => {
+        countMap[id] = 0
+      })
+
+      videoTagRows?.forEach((row) => {
+        countMap[row.tag_id] = (countMap[row.tag_id] || 0) + 1
+      })
+
+      const sortedSiblings = [...siblings].sort((a, b) => {
+        const countA = countMap[a.id] || 0
+        const countB = countMap[b.id] || 0
+
+        if (countA !== countB) {
+          return countB - countA
+        }
+
+        return a.name.localeCompare(b.name, "ja")
+      })
+
+      setSiblingTags(sortedSiblings)
+      const index = sortedSiblings.findIndex((tag) => tag.id === tagId)
+      setCurrentTagIndex(index)
     }
   }
 
@@ -111,7 +189,7 @@ export default function TagPage() {
         }, 700)
       }}
       style={{
-        height: "100vh",
+        height: "100dvh",
         overflowY: "scroll",
         overflowX: "hidden",
         scrollSnapType: "y mandatory",
@@ -153,10 +231,64 @@ export default function TagPage() {
         #{tagName}
       </div>
 
+      {siblingTags.length > 1 ? (
+        <>
+          <button
+            onClick={() => {
+              if (currentTagIndex > 0) {
+                router.push(`/tag/${siblingTags[currentTagIndex - 1].id}`)
+              }
+            }}
+            style={{
+              position: "fixed",
+              left: "16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 20,
+              border: "none",
+              borderRadius: "999px",
+              width: "42px",
+              height: "42px",
+              background: "rgba(0,0,0,0.65)",
+              color: "white",
+              cursor: currentTagIndex > 0 ? "pointer" : "default",
+              opacity: currentTagIndex > 0 ? 1 : 0.35,
+            }}
+          >
+            ←
+          </button>
+
+          <button
+            onClick={() => {
+              if (currentTagIndex < siblingTags.length - 1) {
+                router.push(`/tag/${siblingTags[currentTagIndex + 1].id}`)
+              }
+            }}
+            style={{
+              position: "fixed",
+              right: "16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              zIndex: 20,
+              border: "none",
+              borderRadius: "999px",
+              width: "42px",
+              height: "42px",
+              background: "rgba(0,0,0,0.65)",
+              color: "white",
+              cursor: currentTagIndex < siblingTags.length - 1 ? "pointer" : "default",
+              opacity: currentTagIndex < siblingTags.length - 1 ? 1 : 0.35,
+            }}
+          >
+            →
+          </button>
+        </>
+      ) : null}
+
       {videos.length === 0 ? (
         <div
           style={{
-            minHeight: "100vh",
+            minHeight: "100dvh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -175,7 +307,7 @@ export default function TagPage() {
             key={video.id}
             style={{
               scrollSnapAlign: "start",
-              height: "100vh",
+              height: "100dvh",
             }}
           >
             <VideoPlayer
