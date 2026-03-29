@@ -132,30 +132,34 @@ export default function VideoDetailPage() {
       top: clampedIndex * window.innerHeight,
       behavior: "smooth",
     })
-
-    isAnimatingRef.current = true
-    window.setTimeout(() => {
-      isAnimatingRef.current = false
-    }, 450)
   }
 
   return (
     <div
       ref={containerRef}
       onWheel={(e) => {
+        const isDesktop = window.innerWidth >= 768
+        if (!isDesktop) return
+
         e.preventDefault()
         if (isAnimatingRef.current || relatedVideos.length === 0) return
+
+        isAnimatingRef.current = true
 
         if (e.deltaY > 0) {
           scrollToIndex(currentIndexRef.current + 1)
         } else if (e.deltaY < 0) {
           scrollToIndex(currentIndexRef.current - 1)
         }
+
+        window.setTimeout(() => {
+          isAnimatingRef.current = false
+        }, 700)
       }}
       style={{
         background: "black",
-        minHeight: "100vh",
-        height: "100vh",
+        minHeight: "100dvh",
+        height: "100dvh",
         overflowY: "scroll",
         scrollSnapType: "y mandatory",
         overscrollBehavior: "none",
@@ -163,12 +167,12 @@ export default function VideoDetailPage() {
       }}
     >
       {relatedVideos.length === 0 ? (
-        <div style={{ color: "white", background: "black", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ color: "white", background: "black", minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center" }}>
           読み込み中...
         </div>
       ) : (
         relatedVideos.map((item) => (
-          <div key={item.id} style={{ scrollSnapAlign: "start", height: "100vh", position: "relative" }}>
+          <div key={item.id} style={{ scrollSnapAlign: "start", height: "100dvh", position: "relative" }}>
             <VideoPlayer
               url={item.video_url}
               title={item.title}

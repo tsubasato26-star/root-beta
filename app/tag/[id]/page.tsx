@@ -85,25 +85,30 @@ export default function TagPage() {
       top: clampedIndex * window.innerHeight,
       behavior: "smooth",
     })
-
-    isAnimatingRef.current = true
-    window.setTimeout(() => {
-      isAnimatingRef.current = false
-    }, 700)
   }
 
   return (
     <div
       ref={containerRef}
       onWheel={(e) => {
+        const isDesktop = window.innerWidth >= 768
+        if (!isDesktop) return
+
         e.preventDefault()
+
         if (isAnimatingRef.current || videos.length === 0) return
+
+        isAnimatingRef.current = true
 
         if (e.deltaY > 0) {
           scrollToIndex(currentIndexRef.current + 1)
         } else if (e.deltaY < 0) {
           scrollToIndex(currentIndexRef.current - 1)
         }
+
+        window.setTimeout(() => {
+          isAnimatingRef.current = false
+        }, 700)
       }}
       style={{
         height: "100vh",
