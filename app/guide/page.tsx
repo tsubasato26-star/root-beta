@@ -92,6 +92,7 @@ export default function GuidePage() {
         <section id="about" style={{ background: "rgba(255,255,255,0.06)", borderRadius: "18px", padding: "18px" }}>
           <h2 style={{ marginTop: 0 }}>Rootとは</h2>
           <p>
+            完成じゃなくて、途中を見せるSNS。
             Rootは、ユーザーの趣味や探求を記録し、それが将来仕事につながる可能性を持つ場所です。<br/>
             完成された作品を見せる場ではなく、「過程」や「成長」そのものに価値があるSNSです。
           </p>
