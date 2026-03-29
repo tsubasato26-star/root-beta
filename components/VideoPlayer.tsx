@@ -161,6 +161,11 @@ export default function VideoPlayer({
   }
 }, [])
 
+  useEffect(() => {
+    fetchTags()
+    fetchOwner()
+  }, [id])
+
   return (
     <div
       style={{
