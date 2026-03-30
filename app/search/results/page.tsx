@@ -2,13 +2,13 @@
 
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { supabase } from "@/lib/supabase"
 import VideoPlayer from "@/components/VideoPlayer"
 import FloatingMenu from "@/components/FloatingMenu"
 
-export default function SearchResultsPage() {
+function SearchResultsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const q = searchParams.get("q") || ""
@@ -289,5 +289,28 @@ export default function SearchResultsPage() {
 
       <FloatingMenu />
     </div>
+  )
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div
+          style={{
+            minHeight: "100dvh",
+            background: "black",
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          読み込み中...
+        </div>
+      }
+    >
+      <SearchResultsContent />
+    </Suspense>
   )
 }
