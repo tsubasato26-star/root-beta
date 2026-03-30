@@ -7,8 +7,12 @@ const sections = [
   { id: "basic", title: "基本の使い方" },
   { id: "scroll", title: "縦と横の見方" },
   { id: "posting", title: "投稿の考え方" },
+  { id: "what-to-post", title: "何を投稿すればいいか" },
+  { id: "progress-complete", title: "過程 / 完成の違い" },
   { id: "tags", title: "タグの意味" },
+  { id: "search", title: "検索の使い方" },
   { id: "projects", title: "プロジェクトの意味" },
+  { id: "project-view", title: "プロジェクトの見方" },
   { id: "profile", title: "プロフィールの見方" },
   { id: "rs", title: "RSについて" },
   { id: "faq", title: "よくある疑問" },
@@ -168,6 +172,41 @@ export default function GuidePage() {
           </p>
         </section>
 
+        <section id="what-to-post" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
+          <h2 style={{ marginTop: 0 }}>何を投稿すればいいか</h2>
+          <p>
+            Rootでは、完成品だけではなく、その途中にあるものを投稿できます。<br/>
+            例えば、試しに作ってみたもの、途中で止まっているもの、うまくいかなかった実験、改善したい部分なども立派な投稿です。<br/>
+            大事なのは、今どこまで進んでいて、何を考えているかが伝わることです。
+          </p>
+        </section>
+
+        <section id="progress-complete" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
+          <h2 style={{ marginTop: 0 }}>過程 / 完成の違い</h2>
+          <p>
+            「過程」は、まだ作っている途中の投稿です。<br/>
+            試していること、考えていること、途中の変化を見せるときに使います。<br/><br/>
+            「完成」は、その時点でひと区切りついた投稿です。<br/>
+            完全に終わったという意味だけでなく、「ここまでできた」と示したい時にも使えます。
+          </p>
+        </section>
+
         <section id="tags" style={{
           background: "rgba(255,255,255,0.06)",
           border: "1px solid rgba(255,255,255,0.14)",
@@ -182,6 +221,23 @@ export default function GuidePage() {
             タグは動画を分類するためのものです。<br/>
             見る人が探しやすくなり、自分でも後から見返しやすくなります。<br/>
             できるだけ内容に合った、わかりやすいタグをつけましょう。
+          </p>
+        </section>
+
+        <section id="search" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
+          <h2 style={{ marginTop: 0 }}>検索の使い方</h2>
+          <p>
+            検索では、文字を入力して探すことも、タグを選んで探すこともできます。<br/>
+            また、タイトルで探すか、タグで探すか、両方で探すかを選ぶこともできます。<br/>
+            条件を決めたあと、虫眼鏡ボタンを押すと検索が実行されます。
           </p>
         </section>
 
@@ -202,6 +258,23 @@ export default function GuidePage() {
           </p>
         </section>
 
+        <section id="project-view" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
+          <h2 style={{ marginTop: 0 }}>プロジェクトの見方</h2>
+          <p>
+            プロフィールでは、プロジェクトが上にまとまって表示されます。<br/>
+            それぞれのプロジェクトを押すと、そのプロジェクトに属する投稿だけを見ることができます。<br/>
+            作成日、更新日、投稿数などを見ることで、その活動がどのくらい続いているかも分かります。
+          </p>
+        </section>
+
         <section id="profile" style={{
           background: "rgba(255,255,255,0.06)",
           border: "1px solid rgba(255,255,255,0.14)",
@@ -215,7 +288,7 @@ export default function GuidePage() {
           <p>
             プロフィールでは、その人の投稿を確認できます。<br/>
             新しい順で見ることも、プロジェクトごとに見ることもできます。<br/>
-            その人がどんなことをしているのかが分かる場所です。
+            フォローやフォロワー、続けている活動、投稿の流れを見ることで、その人がどんなことをしているのかが分かります。
           </p>
         </section>
 
