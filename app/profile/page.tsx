@@ -350,7 +350,7 @@ export default function ProfilePage() {
         <div
           style={{
             position: "fixed",
-            top: "16px",
+            top: "calc(env(safe-area-inset-top) + 16px)",
             left: "16px",
             right: "16px",
             display: "flex",
@@ -376,25 +376,28 @@ export default function ProfilePage() {
             戻る
           </button>
 
+          <div style={{ flex: 1 }} />
+
           {isOwnProfile ? (
             <button
               onClick={openEditMenu}
               style={{
               background: "rgba(0,0,0,0.45)",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.18)",
-              borderRadius: "999px",
-              padding: "8px 14px",
-              cursor: "pointer",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
-            }}
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.18)",
+                borderRadius: "999px",
+                padding: "8px 14px",
+                marginRight: "56px",
+                cursor: "pointer",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
+              }}
             >
               編集
             </button>
           ) : currentUserId ? (
-            <button
+                       <button
               onClick={toggleFollow}
               style={{
                 background: isFollowing ? "rgba(0,0,0,0.45)" : "linear-gradient(135deg, #2563eb, #38bdf8)",
@@ -402,6 +405,7 @@ export default function ProfilePage() {
                 border: "1px solid rgba(255,255,255,0.18)",
                 borderRadius: "999px",
                 padding: "8px 14px",
+                marginRight: "56px",
                 cursor: "pointer",
                 backdropFilter: "blur(12px)",
                 WebkitBackdropFilter: "blur(12px)",
@@ -413,6 +417,27 @@ export default function ProfilePage() {
               {isFollowing ? "フォロー中" : "フォロー"}
             </button>
           ) : null}
+          <button
+            onClick={() => router.push("/guide")}
+            style={{
+              position: "fixed",
+              top: "calc(env(safe-area-inset-top) + 16px)",
+              right: "16px",
+              zIndex: 41,
+              border: "1px solid rgba(255,255,255,0.18)",
+              borderRadius: "999px",
+              padding: "8px 14px",
+              background: "rgba(0,0,0,0.45)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
+              color: "white",
+              fontSize: "16px",
+              cursor: "pointer",
+            }}
+          >
+            ?
+          </button>
         </div>
 
         <div style={{ display: "flex", gap: "16px", alignItems: "flex-start", marginTop: "56px", marginBottom: "14px" }}>
