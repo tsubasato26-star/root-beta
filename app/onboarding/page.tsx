@@ -18,7 +18,7 @@ export default function OnboardingPage() {
       },
       {
         title: "完成じゃなくていい",
-        text: "途中・実験・成長を投稿する",
+        text: "途中・過程・成長を投稿する",
         sub: "思いつきでも、試作でも、失敗の途中でもいい。Rootは過程を見る場所。",
         image: "🌱",
       },
