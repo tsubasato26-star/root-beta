@@ -27,6 +27,7 @@ export default function VideoPlayer({
   const [tags, setTags] = useState<any[]>([])
   const [ownerId, setOwnerId] = useState("")
   const [ownerName, setOwnerName] = useState("ユーザー")
+  const [createdAt, setCreatedAt] = useState("")
   const router = useRouter()
 
   const likeVideo = async () => {
@@ -96,7 +97,7 @@ export default function VideoPlayer({
   const fetchOwner = async () => {
     const { data: videoRow, error: videoError } = await supabase
       .from("videos")
-      .select("user_id")
+      .select("user_id, created_at")
       .eq("id", id)
       .single()
 
@@ -105,6 +106,7 @@ export default function VideoPlayer({
     }
 
     setOwnerId(videoRow.user_id)
+    setCreatedAt(videoRow.created_at || "")
 
     const { data: profileRow } = await supabase
       .from("profiles")
@@ -165,6 +167,13 @@ export default function VideoPlayer({
     fetchTags()
     fetchOwner()
   }, [id])
+
+  const formatDate = (value?: string | null) => {
+    if (!value) return ""
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return ""
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`
+  }
 
   return (
     <div
@@ -253,6 +262,17 @@ export default function VideoPlayer({
         <div>{ownerName}</div>
       </div>
 
+      <div
+        style={{
+          position: "absolute",
+          bottom: "calc(env(safe-area-inset-bottom) + 52px)",
+          left: "20px",
+          color: "rgba(255,255,255,0.78)",
+          fontSize: "12px",
+        }}
+      >
+        {formatDate(createdAt)}
+      </div>
       <div
         style={{
           position: "absolute",

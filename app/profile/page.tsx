@@ -619,6 +619,23 @@ export default function ProfilePage() {
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
                 </button>
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "6px",
+                    bottom: "6px",
+                    padding: "4px 8px",
+                    borderRadius: "999px",
+                    background: "rgba(0,0,0,0.45)",
+                    color: "white",
+                    fontSize: "11px",
+                    border: "1px solid rgba(255,255,255,0.14)",
+                    backdropFilter: "blur(10px)",
+                    WebkitBackdropFilter: "blur(10px)",
+                  }}
+                >
+                  {formatDate(video.created_at)}
+                </div>
 
                 {isOwnProfile ? (
                   <button
