@@ -193,7 +193,7 @@ export default function SearchPage() {
               onClick={() => setSelectedTagId(selectedTagId === tag.id ? null : tag.id)}
               style={{
                 background: selectedTagId === tag.id
-                  ? "linear-gradient(135deg, #2563eb, #38bdf8)"
+                  ? "linear-gradient(135deg, #1d4ed8, #2563eb)"
                   : tag.level === 1
                   ? "linear-gradient(135deg, #2563eb, #38bdf8)"
                   : tag.level === 2
@@ -211,12 +211,13 @@ export default function SearchPage() {
                 backdropFilter: "blur(12px)",
                 WebkitBackdropFilter: "blur(12px)",
                 boxShadow: selectedTagId === tag.id
-                  ? "0 10px 26px rgba(37,99,235,0.34), inset 0 1px 0 rgba(255,255,255,0.20)"
+                  ? "inset 0 4px 10px rgba(0,0,0,0.35), inset 0 -1px 3px rgba(255,255,255,0.10), 0 2px 8px rgba(37,99,235,0.18)"
                   : tag.level === 3
                   ? "0 6px 24px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.18)"
                   : tag.level === 1
                   ? "0 8px 22px rgba(37,99,235,0.28), inset 0 1px 0 rgba(255,255,255,0.18)"
                   : "0 8px 22px rgba(14,165,233,0.16), inset 0 1px 0 rgba(255,255,255,0.16)",
+                transform: selectedTagId === tag.id ? "translateY(1px) scale(0.98)" : "translateY(0) scale(1)",
                 cursor: "pointer",
               }}
             >
