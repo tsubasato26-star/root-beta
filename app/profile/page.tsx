@@ -13,6 +13,7 @@ export default function ProfilePage() {
   const [targetUserId, setTargetUserId] = useState<string | null>(null)
   const [profile, setProfile] = useState<any>(null)
   const [videos, setVideos] = useState<any[]>([])
+  const [allUserVideos, setAllUserVideos] = useState<any[]>([])
   const [projects, setProjects] = useState<any[]>([])
   const [selectedProject, setSelectedProject] = useState<any>(null)
   const [followerCount, setFollowerCount] = useState(0)
@@ -121,6 +122,18 @@ export default function ProfilePage() {
     } else {
       setVideos(videoData || [])
     }
+    const { data: allVideosData, error: allVideosError } = await supabase
+     .from("videos")
+     .select("*")
+     .eq("user_id", pageUserId)
+     .order("created_at", { ascending: false })
+
+    if (allVideosError) {
+      console.log(allVideosError)
+      setAllUserVideos([])
+    } else {
+      setAllUserVideos(allVideosData || [])
+    }
 
     const { count: followers } = await supabase
       .from("follows")
@@ -154,6 +167,45 @@ export default function ProfilePage() {
     }
 
     setLoading(false)
+  }
+
+  const formatDate = (value?: string | null) => {
+    if (!value) return "日付なし"
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return "日付なし"
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`
+  }
+
+    const getProjectMeta = (projectId: string) => {
+    const projectVideos = allUserVideos.filter(
+      (video) => String(video.project_id || "") === String(projectId)
+    )
+    const latestVideo = projectVideos[0]
+    return {
+      videoCount: projectVideos.length,
+      latestDate: latestVideo?.created_at || null,
+    }
+  }
+    const selectProject = (project: any) => {
+    setSelectedProject(project)
+
+    const filtered = allUserVideos.filter(
+      (video) => String(video.project_id || "") === String(project.id)
+    )
+    setVideos(filtered)
+
+    if (targetUserId) {
+      router.replace(`/profile?user=${targetUserId}&project=${project.id}`)
+    }
+  }
+
+  const clearProjectFilter = () => {
+    setSelectedProject(null)
+    setVideos(allUserVideos)
+
+    if (targetUserId) {
+      router.replace(`/profile?user=${targetUserId}`)
+    }
   }
 
   const isOwnProfile = !!currentUserId && currentUserId === targetUserId
@@ -309,13 +361,16 @@ export default function ProfilePage() {
         >
           <button
             onClick={() => router.back()}
-            style={{
-              background: "rgba(255,255,255,0.12)",
+              style={{
+              background: "rgba(0,0,0,0.45)",
               color: "white",
-              border: "none",
+              border: "1px solid rgba(255,255,255,0.18)",
               borderRadius: "999px",
               padding: "8px 14px",
               cursor: "pointer",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
             }}
           >
             戻る
@@ -325,13 +380,16 @@ export default function ProfilePage() {
             <button
               onClick={openEditMenu}
               style={{
-                background: "rgba(255,255,255,0.12)",
-                color: "white",
-                border: "none",
-                borderRadius: "999px",
-                padding: "8px 14px",
-                cursor: "pointer",
-              }}
+              background: "rgba(0,0,0,0.45)",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.18)",
+              borderRadius: "999px",
+              padding: "8px 14px",
+              cursor: "pointer",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
+            }}
             >
               編集
             </button>
@@ -339,12 +397,17 @@ export default function ProfilePage() {
             <button
               onClick={toggleFollow}
               style={{
-                background: isFollowing ? "rgba(255,255,255,0.12)" : "#ff2d55",
+                background: isFollowing ? "rgba(0,0,0,0.45)" : "linear-gradient(135deg, #2563eb, #38bdf8)",
                 color: "white",
-                border: "none",
+                border: "1px solid rgba(255,255,255,0.18)",
                 borderRadius: "999px",
                 padding: "8px 14px",
                 cursor: "pointer",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: isFollowing
+                  ? "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)"
+                  : "0 10px 30px rgba(59,130,246,0.28), inset 0 1px 0 rgba(255,255,255,0.22)",
               }}
             >
               {isFollowing ? "フォロー中" : "フォロー"}
@@ -389,57 +452,134 @@ export default function ProfilePage() {
           {isOwnProfile ? <div>{followingCount} フォロー中</div> : null}
         </div>
 
-                <div style={{ marginBottom: "20px" }}>
-          <div style={{ fontSize: "18px", fontWeight: 700, marginBottom: "10px" }}>
-            プロジェクト
-          </div>
+        <div style={{ marginBottom: "22px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "12px",
+            }}
+          >
+            <button
+              onClick={() => {
+                if (selectedProject) {
+                  clearProjectFilter()
+                }
+              }}
+              style={{
+                background: "none",
+                border: "none",
+                padding: 0,
+                color: "white",
+                fontSize: "18px",
+                fontWeight: 700,
+                cursor: selectedProject ? "pointer" : "default",
+              }}
+            >
+              プロジェクト
+            </button>
 
-          {selectedProject ? (
-            <div style={{ marginBottom: "12px", color: "rgba(255,255,255,0.8)" }}>
-              現在表示中: {selectedProject.name}
-            </div>
-          ) : null}
+            {selectedProject ? (
+              <div style={{ color: "rgba(255,255,255,0.72)", fontSize: "13px" }}>
+                {selectedProject.name} を表示中
+              </div>
+            ) : null}
+          </div>
 
           {projects.length === 0 ? (
             <div style={{ color: "rgba(255,255,255,0.65)" }}>まだプロジェクトがありません</div>
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "10px" }}>
-              {projects.map((project) => (
-                <button
-                  key={project.id}
-                  onClick={() => router.push(`/profile?user=${targetUserId}&project=${project.id}`)}
-                  style={{
-                    textAlign: "left",
-                    padding: "14px",
-                    borderRadius: "16px",
-                    border: "none",
-                    background: "rgba(255,255,255,0.08)",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  <div style={{ fontWeight: 700, marginBottom: "6px" }}>
-                    {project.name} {project.is_completed ? "✓" : ""}
-                  </div>
-                  <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>
-                    {project.description || "説明なし"}
-                  </div>
-                </button>
-              ))}
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                overflowX: "auto",
+                paddingBottom: "6px",
+                WebkitOverflowScrolling: "touch",
+              }}
+            >
+              {projects.map((project) => {
+                const meta = getProjectMeta(project.id)
+                const active = selectedProject?.id === project.id
+
+                
+
+                return (
+                  <button
+                    key={project.id}
+                    onClick={() => selectProject(project)}
+                    style={{
+                      minWidth: "220px",
+                      maxWidth: "220px",
+                      height: "132px",
+                      flexShrink: 0,
+                      textAlign: "left",
+                      padding: "16px 14px",
+                      borderRadius: "14px",
+                      border: active
+                        ? "1px solid rgba(255,255,255,0.22)"
+                        : "1px solid rgba(255,255,255,0.14)",
+                      background: active ? "rgba(37,99,235,0.24)" : "rgba(255,255,255,0.08)",
+                      color: "white",
+                      cursor: "pointer",
+                      boxShadow: active
+                        ? "0 10px 26px rgba(37,99,235,0.20), inset 0 1px 0 rgba(255,255,255,0.14)"
+                        : "0 10px 22px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+                      backdropFilter: "blur(10px)",
+                      WebkitBackdropFilter: "blur(10px)",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div>
+
+
+                      <div style={{ fontSize: "18px", fontWeight: 700, lineHeight: 1.35, marginBottom: "8px" }}>
+                        {project.name} {project.is_completed ? "✓" : ""}
+                      </div>
+
+                      <div
+                        style={{
+                          fontSize: "12px",
+                          lineHeight: 1.6,
+                          color: "rgba(255,255,255,0.72)",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 4,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {project.description || "説明なし"}
+                      </div>
+                    </div>
+
+                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.68)", lineHeight: 1.55 }}>
+                      <div>作成日: {formatDate(project.created_at)}</div>
+                      <div>{project.is_completed ? "完成扱い" : "最終更新"}: {formatDate(meta.latestDate || project.created_at)}</div>
+                      <div>投稿数: {meta.videoCount}</div>
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           )}
 
           {selectedProject ? (
             <button
-              onClick={() => router.push(`/profile?user=${targetUserId}`)}
+             onClick={clearProjectFilter}
               style={{
                 marginTop: "12px",
                 padding: "10px 14px",
                 borderRadius: "999px",
-                border: "none",
-                background: "rgba(255,255,255,0.12)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                background: "rgba(0,0,0,0.45)",
                 color: "white",
                 cursor: "pointer",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
               }}
             >
               プロジェクト絞り込みを解除
