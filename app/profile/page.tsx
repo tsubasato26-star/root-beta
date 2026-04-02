@@ -22,6 +22,7 @@ export default function ProfilePage() {
   const [editMenuOpen, setEditMenuOpen] = useState(false)
   const [editField, setEditField] = useState<"username" | "bio" | null>(null)
   const [editValue, setEditValue] = useState("")
+  const [selectedStat, setSelectedStat] = useState<null | "level" | "days" | "logs" | "consistency">(null)
 
   useEffect(() => {
     loadProfilePage()
@@ -206,6 +207,74 @@ export default function ProfilePage() {
     if (targetUserId) {
       router.replace(`/profile?user=${targetUserId}`)
     }
+  }
+
+  const getDateKey = (value?: string | null) => {
+    if (!value) return null
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return null
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+  }
+
+  const getActivityDays = () => {
+    const uniqueDays = new Set(
+      allUserVideos
+        .map((video) => getDateKey(video.created_at))
+        .filter(Boolean)
+    )
+    return uniqueDays.size
+  }
+
+  const getActivityDaysThisMonth = () => {
+    const now = new Date()
+    const currentYear = now.getFullYear()
+    const currentMonth = now.getMonth()
+
+    const uniqueDays = new Set(
+      allUserVideos
+        .map((video) => {
+          const date = new Date(video.created_at)
+          if (Number.isNaN(date.getTime())) return null
+          if (date.getFullYear() !== currentYear || date.getMonth() !== currentMonth) return null
+          return getDateKey(video.created_at)
+        })
+        .filter(Boolean)
+    )
+
+    return uniqueDays.size
+  }
+
+  const getConsistencyRate = () => {
+    const now = new Date()
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(now.getDate() - 29)
+
+    const uniqueDays = new Set(
+      allUserVideos
+        .map((video) => {
+          const date = new Date(video.created_at)
+          if (Number.isNaN(date.getTime())) return null
+          if (date < thirtyDaysAgo || date > now) return null
+          return getDateKey(video.created_at)
+        })
+        .filter(Boolean)
+    )
+
+    return Math.round((uniqueDays.size / 30) * 100)
+  }
+
+  const getRootLevel = () => {
+    const completedProjects = projects.filter((project) => project.is_completed).length
+    const completedVideos = allUserVideos.filter((video) => video.post_type === "complete").length
+    const points = allUserVideos.length * 10 + completedVideos * 10 + completedProjects * 25
+    return Math.floor(points / 50) + 1
+  }
+
+  const statValueMap = {
+    level: `Lv.${getRootLevel()}`,
+    days: `${getActivityDays()} Days`,
+    logs: `${allUserVideos.length} Logs`,
+    consistency: `${getConsistencyRate()}%`,
   }
 
   const isOwnProfile = !!currentUserId && currentUserId === targetUserId
@@ -477,6 +546,153 @@ export default function ProfilePage() {
           {isOwnProfile ? <div>{followingCount} フォロー中</div> : null}
         </div>
 
+        <div style={{ marginBottom: "20px" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "8px",
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}
+          >
+            <button
+              onClick={() => setSelectedStat(selectedStat === "level" ? null : "level")}
+              style={{
+                background: selectedStat === "level" ? "rgba(37,99,235,0.24)" : "rgba(255,255,255,0.08)",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.14)",
+                borderRadius: "999px",
+                padding: "8px 12px",
+                cursor: "pointer",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+              }}
+            >
+              {statValueMap.level}
+            </button>
+
+            <button
+              onClick={() => setSelectedStat(selectedStat === "days" ? null : "days")}
+              style={{
+                background: selectedStat === "days" ? "rgba(37,99,235,0.24)" : "rgba(255,255,255,0.08)",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.14)",
+                borderRadius: "999px",
+                padding: "8px 12px",
+                cursor: "pointer",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+              }}
+            >
+              {statValueMap.days}
+            </button>
+
+            <button
+              onClick={() => setSelectedStat(selectedStat === "logs" ? null : "logs")}
+              style={{
+                background: selectedStat === "logs" ? "rgba(37,99,235,0.24)" : "rgba(255,255,255,0.08)",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.14)",
+                borderRadius: "999px",
+                padding: "8px 12px",
+                cursor: "pointer",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+              }}
+            >
+              {statValueMap.logs}
+            </button>
+
+            <button
+              onClick={() => setSelectedStat(selectedStat === "consistency" ? null : "consistency")}
+              style={{
+                background: selectedStat === "consistency" ? "rgba(37,99,235,0.24)" : "rgba(255,255,255,0.08)",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.14)",
+                borderRadius: "999px",
+                padding: "8px 12px",
+                cursor: "pointer",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
+              }}
+            >
+              {statValueMap.consistency}
+            </button>
+          </div>
+
+          {selectedStat === "level" ? (
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "12px 14px",
+                borderRadius: "14px",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.14)",
+                color: "white",
+                lineHeight: 1.7,
+              }}
+            >
+              <div style={{ fontWeight: 700, marginBottom: "4px" }}>Root Level</div>
+              <div>現在のレベル: {statValueMap.level}</div>
+              <div>投稿・完成・継続によって少しずつ上がります。</div>
+            </div>
+          ) : null}
+
+          {selectedStat === "days" ? (
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "12px 14px",
+                borderRadius: "14px",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.14)",
+                color: "white",
+                lineHeight: 1.7,
+              }}
+            >
+              <div style={{ fontWeight: 700, marginBottom: "4px" }}>Activity Days</div>
+              <div>活動日数: {getActivityDays()}日</div>
+              <div>投稿した日を1日として数えています。</div>
+            </div>
+          ) : null}
+
+          {selectedStat === "logs" ? (
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "12px 14px",
+                borderRadius: "14px",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.14)",
+                color: "white",
+                lineHeight: 1.7,
+              }}
+            >
+              <div style={{ fontWeight: 700, marginBottom: "4px" }}>Log Count</div>
+              <div>総ログ数: {allUserVideos.length}</div>
+              <div>過程も完成も、積み重ねた投稿の数です。</div>
+            </div>
+          ) : null}
+
+          {selectedStat === "consistency" ? (
+            <div
+              style={{
+                marginTop: "10px",
+                padding: "12px 14px",
+                borderRadius: "14px",
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.14)",
+                color: "white",
+                lineHeight: 1.7,
+              }}
+            >
+              <div style={{ fontWeight: 700, marginBottom: "4px" }}>Consistency Rate</div>
+              <div>活動割合: {getConsistencyRate()}%</div>
+              <div>今月の活動日数: {getActivityDaysThisMonth()}日</div>
+            </div>
+          ) : null}
+        </div>
+
         <div style={{ marginBottom: "22px" }}>
           <div
             style={{
@@ -562,7 +778,8 @@ export default function ProfilePage() {
 
 
                       <div style={{ fontSize: "18px", fontWeight: 700, lineHeight: 1.35, marginBottom: "8px" }}>
-                        {project.name} {project.is_completed ? "✓" : ""}
+                        <span>{project.name} </span>
+                        {project.is_completed ? <span style={{ color: "#facc15" }}>★</span> : null}
                       </div>
 
                       <div
