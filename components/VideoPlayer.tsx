@@ -11,7 +11,6 @@ export default function VideoPlayer({
   id,
   description,
   postType,
-  showBackButton = true,
 }: {
   url: string
   title: string
@@ -19,15 +18,22 @@ export default function VideoPlayer({
   id: string
   description?: string
   postType?: string
-  showBackButton?: boolean
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null)
+
+  const isImageUrl = (value: string) => {
+    const clean = value.split("?")[0].toLowerCase()
+    return /\.(png|jpe?g|webp|gif|bmp|avif|heic)$/i.test(clean)
+  }
+
+  const isImage = isImageUrl(url)
   const [likeCount, setLikeCount] = useState(likes ?? 0)
   const [liked, setLiked] = useState(false)
   const [tags, setTags] = useState<any[]>([])
   const [ownerId, setOwnerId] = useState("")
   const [ownerName, setOwnerName] = useState("ユーザー")
   const [createdAt, setCreatedAt] = useState("")
+  const [isMuted, setIsMuted] = useState(true)
   const router = useRouter()
 
   const likeVideo = async () => {
@@ -120,48 +126,50 @@ export default function VideoPlayer({
   }
 
   useEffect(() => {
-  const target = videoRef.current
-  if (!target) return
+    if (isImage) return
 
-  let cancelled = false
+    const target = videoRef.current
+    if (!target) return
 
-  const tryPlay = async () => {
-    try {
-      await target.play()
-    } catch (error: any) {
-      if (error?.name !== "AbortError") {
-        console.log(error)
+    let cancelled = false
+
+    const tryPlay = async () => {
+      try {
+        await target.play()
+      } catch (error: any) {
+        if (error?.name !== "AbortError") {
+          console.log(error)
+        }
       }
     }
-  }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.target !== target || cancelled) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target !== target || cancelled) return
 
-        if (entry.isIntersecting) {
-          void tryPlay()
-        } else {
-          if (!target.paused) {
-            target.pause()
+          if (entry.isIntersecting) {
+            void tryPlay()
+          } else {
+            if (!target.paused) {
+              target.pause()
+            }
           }
-        }
-      })
-    },
-    { threshold: 0.6 }
-  )
+        })
+      },
+      { threshold: 0.6 }
+    )
 
-  observer.observe(target)
+    observer.observe(target)
 
-  return () => {
-    cancelled = true
-    observer.disconnect()
-    if (!target.paused) {
-      target.pause()
+    return () => {
+      cancelled = true
+      observer.disconnect()
+      if (!target.paused) {
+        target.pause()
+      }
     }
-  }
-}, [])
+  }, [isImage])
 
   useEffect(() => {
     fetchTags()
@@ -209,25 +217,54 @@ export default function VideoPlayer({
           {postType === "complete" ? "完成" : "実験 / 仮定"}
         </div>
       )}
-      <video
-  ref={videoRef}
-  src={url}
-  loop
-  muted
-  playsInline
-  preload="metadata"
-        style={{
-          height: "100%",
-          width: "100%",
-          objectFit: "cover",
-        }}
-      />
+      {isImage ? (
+        <img
+          src={url}
+          alt={title || "post image"}
+          style={{
+            height: "100%",
+            width: "100%",
+            objectFit: "cover",
+            display: "block",
+          }}
+        />
+      ) : (
+        <video
+          ref={videoRef}
+          src={url}
+          loop
+          muted={isMuted}
+          playsInline
+          preload="metadata"
+          style={{
+            height: "100%",
+            width: "100%",
+            objectFit: "cover",
+          }}
+        />
+      )}
 
-      {showBackButton ? (
+
+      {!isImage ? (
         <button
-          
+          onClick={() => setIsMuted((prev) => !prev)}
+          style={{
+            position: "absolute",
+            right: "20px",
+            bottom: "calc(env(safe-area-inset-bottom) + 320px)",
+            border: "1px solid rgba(255,255,255,0.18)",
+            borderRadius: "999px",
+            padding: "8px 12px",
+            background: "rgba(0,0,0,0.45)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            boxShadow: "0 6px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.16)",
+            color: "white",
+            cursor: "pointer",
+            zIndex: 20,
+          }}
         >
-          戻る
+          {isMuted ? "🔇" : "🔊"}
         </button>
       ) : null}
 

@@ -104,7 +104,7 @@ export default function PostPage() {
     }
   }
 
-  const uploadVideo = async () => {
+  const uploadPost = async () => {
     const { data: userData } = await supabase.auth.getUser()
     const user = userData.user
 
@@ -120,7 +120,14 @@ export default function PostPage() {
     }
 
     if (!file) {
-      alert("動画を選択してください")
+      alert("動画または画像を選択してください")
+      return
+    }
+    const isVideo = file.type.startsWith("video/")
+    const isImage = file.type.startsWith("image/")
+
+    if (!isVideo && !isImage) {
+      alert("動画または画像ファイルを選択してください")
       return
     }
 
@@ -156,7 +163,8 @@ export default function PostPage() {
       projectIdToUse = newProject.id
     }
 
-    const fileName = Date.now() + "-" + file.name
+    const safeName = file.name.replace(/\s+/g, "-")
+    const fileName = Date.now() + "-" + safeName
 
     const { error: uploadError } = await supabase.storage
       .from("videos")
@@ -236,7 +244,7 @@ export default function PostPage() {
         戻る
       </button>
 
-      <h1>動画投稿</h1>
+      <h1>投稿</h1>
 
       <h3>投稿タイプ</h3>
 
@@ -447,13 +455,18 @@ export default function PostPage() {
 
       <input
         type="file"
-        accept="video/*"
+        accept="video/*,image/*"
         onChange={(e) => setFile(e.target.files?.[0] || null)}
       />
+      {file ? (
+        <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "14px" }}>
+          選択中: {file.name} ({file.type.startsWith("image/") ? "画像" : file.type.startsWith("video/") ? "動画" : "未対応"})
+        </p>
+      ) : null}
 
       <br />
 
-      <button onClick={uploadVideo}>投稿</button>
+      <button onClick={uploadPost}>投稿</button>
 
       <FloatingMenu />
     </div>
