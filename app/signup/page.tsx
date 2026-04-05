@@ -10,10 +10,11 @@ export default function SignupPage() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [username, setUsername] = useState("")
+  const [isOrg, setIsOrg] = useState(false)
 
   const signUp = async () => {
     if (!username.trim()) {
-      alert("ユーザーネームを入力してください")
+      alert(isOrg ? "団体名を入力してください" : "ユーザーネームを入力してください")
       return
     }
 
@@ -40,6 +41,7 @@ export default function SignupPage() {
         id: newUserId,
         username,
         bio: "",
+        account_type: isOrg ? "organization" : "personal",
       })
 
       if (profileError) {
@@ -95,7 +97,7 @@ export default function SignupPage() {
 
       <input
         type="text"
-        placeholder="ユーザーネーム"
+        placeholder={isOrg ? "団体名" : "ユーザーネーム"}
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         style={{ width: "300px", padding: "10px", borderRadius: "8px", border: "none" }}
@@ -114,6 +116,30 @@ export default function SignupPage() {
       >
         ログインへ戻る
       </button>
+
+      <div style={{ fontSize: "13px", marginTop: "8px" }}>
+        {isOrg ? (
+          <>
+            個人アカウントに戻る
+            <span
+              onClick={() => setIsOrg(false)}
+              style={{ color: "#3b82f6", cursor: "pointer", marginLeft: "6px" }}
+            >
+              こちら
+            </span>
+          </>
+        ) : (
+          <>
+            団体の方は
+            <span
+              onClick={() => setIsOrg(true)}
+              style={{ color: "#3b82f6", cursor: "pointer", marginLeft: "6px" }}
+            >
+              こちら
+            </span>
+          </>
+        )}
+      </div>
     </div>
   )
 }

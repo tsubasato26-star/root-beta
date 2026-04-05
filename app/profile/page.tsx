@@ -526,8 +526,26 @@ export default function ProfilePage() {
               <div style={{ fontSize: "22px", fontWeight: 700 }}>
                 {profile?.username || "ユーザー"}
               </div>
+
+              {profile?.account_type === "organization" ? (
+                <div
+                  style={{
+                    padding: "4px 10px",
+                    borderRadius: "999px",
+                    background: "rgba(37,99,235,0.24)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    color: "white",
+                    fontSize: "12px",
+                    backdropFilter: "blur(10px)",
+                    WebkitBackdropFilter: "blur(10px)",
+                  }}
+                >
+                  団体
+                </div>
+              ) : null}
+
               <div style={{ color: "rgba(255,255,255,0.55)", fontSize: "13px" }}>
-                認証予定位置
+                {profile?.account_type === "organization" ? "団体アカウント" : "認証予定位置"}
               </div>
             </div>
 
@@ -536,7 +554,7 @@ export default function ProfilePage() {
             </div>
 
             <div style={{ marginTop: "10px", color: "rgba(255,255,255,0.88)", whiteSpace: "pre-wrap" }}>
-              {profile?.bio || "ユーザーコメント未設定"}
+              {profile?.bio || (profile?.account_type === "organization" ? "団体紹介未設定" : "ユーザーコメント未設定")}
             </div>
           </div>
         </div>
@@ -545,6 +563,22 @@ export default function ProfilePage() {
           <div>{followerCount} フォロワー</div>
           {isOwnProfile ? <div>{followingCount} フォロー中</div> : null}
         </div>
+        {profile?.account_type === "organization" ? (
+          <div
+            style={{
+              marginBottom: "16px",
+              padding: "10px 12px",
+              borderRadius: "14px",
+              background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.14)",
+              color: "rgba(255,255,255,0.82)",
+              fontSize: "13px",
+              lineHeight: 1.7,
+            }}
+          >
+            このアカウントは団体用プロフィールです。投稿や活動記録をまとめて見ることができます。
+          </div>
+        ) : null}
 
         <div style={{ marginBottom: "20px" }}>
           <div
@@ -970,7 +1004,7 @@ export default function ProfilePage() {
                       textAlign: "left",
                     }}
                   >
-                    ユーザーネーム
+                    {profile?.account_type === "organization" ? "団体名" : "ユーザーネーム"}
                   </button>
 
                   <button
@@ -985,7 +1019,7 @@ export default function ProfilePage() {
                       textAlign: "left",
                     }}
                   >
-                    ユーザーコメント
+                    {profile?.account_type === "organization" ? "団体紹介" : "ユーザーコメント"}
                   </button>
 
                   <button
@@ -1000,7 +1034,7 @@ export default function ProfilePage() {
                       textAlign: "left",
                     }}
                   >
-                    ユーザーアイコン
+                    {profile?.account_type === "organization" ? "団体アイコン" : "ユーザーアイコン"}
                   </button>
                 </div>
 
@@ -1023,7 +1057,13 @@ export default function ProfilePage() {
             ) : (
               <>
                 <div style={{ fontSize: "22px", fontWeight: 700, marginBottom: "16px" }}>
-                  {editField === "username" ? "ユーザーネーム編集" : "ユーザーコメント編集"}
+                  {editField === "username"
+                    ? profile?.account_type === "organization"
+                      ? "団体名編集"
+                      : "ユーザーネーム編集"
+                    : profile?.account_type === "organization"
+                    ? "団体紹介編集"
+                    : "ユーザーコメント編集"}
                 </div>
 
                 {editField === "username" ? (

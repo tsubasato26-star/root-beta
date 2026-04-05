@@ -10,6 +10,9 @@ export default function PostPage() {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [file, setFile] = useState<File | null>(null)
+  const [addMusicToImage, setAddMusicToImage] = useState(false)
+  const [musicTitle, setMusicTitle] = useState("")
+  const [musicArtist, setMusicArtist] = useState("")
   const [tags, setTags] = useState<any[]>([])
   const [level1, setLevel1] = useState("")
   const [level2Tags, setLevel2Tags] = useState<any[]>([])
@@ -104,6 +107,9 @@ export default function PostPage() {
     }
   }
 
+  const isImageSelected = !!file && file.type.startsWith("image/")
+  const isVideoSelected = !!file && file.type.startsWith("video/")
+
   const uploadPost = async () => {
     const { data: userData } = await supabase.auth.getUser()
     const user = userData.user
@@ -129,6 +135,12 @@ export default function PostPage() {
     if (!isVideo && !isImage) {
       alert("動画または画像ファイルを選択してください")
       return
+    }
+
+    if (isVideo && addMusicToImage) {
+      setAddMusicToImage(false)
+      setMusicTitle("")
+      setMusicArtist("")
     }
 
     let projectIdToUse = selectedProjectId
@@ -453,14 +465,80 @@ export default function PostPage() {
 
       <br />
 
+      <p style={{ marginBottom: "8px", fontWeight: 700 }}>動画や画像を選択</p>
       <input
         type="file"
         accept="video/*,image/*"
-        onChange={(e) => setFile(e.target.files?.[0] || null)}
+        onChange={(e) => {
+          const nextFile = e.target.files?.[0] || null
+          setFile(nextFile)
+
+          if (!nextFile || !nextFile.type.startsWith("image/")) {
+            setAddMusicToImage(false)
+            setMusicTitle("")
+            setMusicArtist("")
+          }
+        }}
       />
       {file ? (
         <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "14px" }}>
           選択中: {file.name} ({file.type.startsWith("image/") ? "画像" : file.type.startsWith("video/") ? "動画" : "未対応"})
+        </p>
+      ) : null}
+      {isImageSelected ? (
+        <div
+          style={{
+            marginTop: "12px",
+            marginBottom: "12px",
+            padding: "14px",
+            borderRadius: "16px",
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.14)",
+          }}
+        >
+          <div style={{ fontWeight: 700, marginBottom: "8px" }}>画像投稿の楽曲</div>
+
+          <button
+            type="button"
+            onClick={() => setAddMusicToImage((prev) => !prev)}
+            style={{
+              padding: "8px 14px",
+              borderRadius: "999px",
+              border: "none",
+              background: addMusicToImage ? "#2563eb" : "#ddd",
+              color: addMusicToImage ? "white" : "black",
+              cursor: "pointer",
+              marginBottom: addMusicToImage ? "12px" : 0,
+            }}
+          >
+            {addMusicToImage ? "楽曲を追加する設定中" : "楽曲を追加する"}
+          </button>
+
+          {addMusicToImage ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+              <input
+                placeholder="曲名（表示用）"
+                value={musicTitle}
+                onChange={(e) => setMusicTitle(e.target.value)}
+              />
+
+              <input
+                placeholder="アーティスト名（任意）"
+                value={musicArtist}
+                onChange={(e) => setMusicArtist(e.target.value)}
+              />
+
+              <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.6, margin: 0 }}>
+                今はここで楽曲情報の入力欄だけを用意しています。<br />
+                まだ保存や再生には使われていません。動画の音楽編集も今後の機能です。
+              </p>
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+      {isVideoSelected ? (
+        <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", lineHeight: 1.6 }}>
+          動画はそのまま投稿します。音楽追加はまだ実装していません。
         </p>
       ) : null}
 
