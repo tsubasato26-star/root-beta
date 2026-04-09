@@ -544,6 +544,23 @@ export default function ProfilePage() {
                 </div>
               ) : null}
 
+              <button
+                onClick={() => router.push("/rs")}
+                style={{
+                  padding: "4px 10px",
+                  borderRadius: "999px",
+                  background: "rgba(255,255,255,0.08)",
+                  border: "1px solid rgba(255,255,255,0.14)",
+                  color: "white",
+                  fontSize: "12px",
+                  cursor: "pointer",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                }}
+              >
+                RS --
+              </button>
+
               <div style={{ color: "rgba(255,255,255,0.55)", fontSize: "13px" }}>
                 {profile?.account_type === "organization" ? "団体アカウント" : "認証予定位置"}
               </div>

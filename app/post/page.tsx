@@ -462,6 +462,35 @@ export default function PostPage() {
           )
         })}
       </div>
+      <div
+        style={{
+          marginTop: "12px",
+          marginBottom: "6px",
+          display: "flex",
+          alignItems: "center",
+          gap: "10px",
+          flexWrap: "wrap",
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => alert("タグ作成はβ版ではまだ使えません")}
+          style={{
+            padding: "8px 14px",
+            borderRadius: "999px",
+            border: "1px solid rgba(255,255,255,0.16)",
+            background: "rgba(255,255,255,0.08)",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          ＋ タグを作る
+        </button>
+
+        <span style={{ color: "rgba(255,255,255,0.65)", fontSize: "13px" }}>
+          正式版で追加予定
+        </span>
+      </div>
 
       <br />
 
@@ -543,6 +572,22 @@ export default function PostPage() {
       ) : null}
 
       <br />
+
+      <div
+        style={{
+          marginBottom: "14px",
+          padding: "12px 14px",
+          borderRadius: "14px",
+          background: "rgba(255,255,255,0.08)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          color: "white",
+        }}
+      >
+        <div style={{ fontWeight: 700, marginBottom: "4px" }}>RS</div>
+        <div style={{ color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.6 }}>
+          投稿によるRS反映は今後追加予定です。βではまだ計算・付与されません。
+        </div>
+      </div>
 
       <button onClick={uploadPost}>投稿</button>
 
