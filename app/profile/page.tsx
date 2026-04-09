@@ -905,12 +905,20 @@ export default function ProfilePage() {
                     height: "100%",
                   }}
                 >
-                  <video
-                    src={video.video_url}
-                    muted
-                    playsInline
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
+                 {String(video.video_url || "").split("?")[0].toLowerCase().match(/\.(png|jpe?g|webp|gif|bmp|avif|heic)$/i) ? (
+                    <img
+                      src={video.video_url}
+                      alt={video.title || "post image"}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
+                  ) : (
+                    <video
+                      src={video.video_url}
+                      muted
+                      playsInline
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                    />
+                  )}
                 </button>
                 <div
                   style={{

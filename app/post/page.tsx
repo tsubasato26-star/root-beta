@@ -257,10 +257,27 @@ export default function PostPage() {
       </button>
 
       <h1>投稿</h1>
+      <div
+        style={{
+          marginBottom: "16px",
+          padding: "12px 14px",
+          borderRadius: "14px",
+          background: "rgba(255,255,255,0.08)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          color: "white",
+        }}
+      >
+        <div style={{ fontWeight: 700, marginBottom: "4px" }}>投稿のヒント</div>
+        <div style={{ color: "rgba(255,255,255,0.75)", fontSize: "13px", lineHeight: 1.7 }}>
+          完成していなくても投稿できます。試作、途中経過、改善したい部分も立派な記録です。
+        </div>
+      </div>
 
       <h3>投稿タイプ</h3>
+      <p style={{ color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.6, marginTop: "0", marginBottom: "12px" }}>途中の記録なら「実験 / 過程」、ひと区切りついたら「完成」を選びます。</p>
 
             <h3>プロジェクト</h3>
+      <p style={{ color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.6, marginTop: "0", marginBottom: "12px" }}>続きものの投稿は同じプロジェクトにまとめると、あとから見返しやすくなります。</p>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
         <button
@@ -385,6 +402,7 @@ export default function PostPage() {
 
       <br />
       <h3>タグ</h3>
+      <p style={{ color: "rgba(255,255,255,0.72)", fontSize: "13px", lineHeight: 1.6, marginTop: "0", marginBottom: "12px" }}>タグは見つけてもらいやすくするための分類です。内容に近いものを選んでください。</p>
 
       <select
         value={level1}
