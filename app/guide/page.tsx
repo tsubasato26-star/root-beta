@@ -15,6 +15,7 @@ const sections = [
   { id: "project-view", title: "プロジェクトの見方" },
   { id: "profile", title: "プロフィールの見方" },
   { id: "rs", title: "RSについて" },
+  { id: "not-allowed", title: "投稿してはいけないもの" },
   { id: "faq", title: "よくある疑問" },
 ]
 
@@ -305,6 +306,29 @@ export default function GuidePage() {
           <p>
             RS（RootStone）はRoot内で使われるポイントのようなものです。<br/>
             投稿や活動を通して集めることができ、今後さまざまな用途に使われる予定です。
+          </p>
+        </section>
+
+        <section id="not-allowed" style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1px solid rgba(255,255,255,0.14)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          boxShadow: "0 6px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          borderRadius: "18px",
+          padding: "18px",
+        }}>
+          <h2 style={{ marginTop: 0 }}>投稿してはいけないもの</h2>
+          <p>
+            Rootでは、自分の成長や探究の過程が見える投稿を大切にしています。<br/>
+            そのため、以下のような投稿はしてほしくありません。<br/><br/>
+
+            ・他人の動画や作品の転載<br/>
+            ・誰でも同じ形で出せるまとめ動画やテンプレネタ<br/>
+            ・他人の作品をそのまま真似しただけの投稿<br/><br/>
+
+            ただし、他人から学ぶこと自体は問題ありません。<br/>
+            参考にした上で、自分なりの工夫や変化、自分の考えが入っていれば、それはRootで価値のある投稿です。
           </p>
         </section>
 

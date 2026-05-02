@@ -118,7 +118,6 @@ export default function Home() {
               likes={video.likes}
               id={video.id}
               description={video.description}
-              showBackButton={false}
               postType={video.post_type}
             />
           </div>
