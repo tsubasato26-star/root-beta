@@ -38,8 +38,25 @@ export default function LoginPage() {
         padding: "24px",
       }}
     >
-      <div style={{ fontSize: "36px", fontWeight: 800, marginBottom: "8px" }}>
-        Root
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          marginBottom: "16px",
+        }}
+      >
+        <img
+          src="/RootLogo.noback.PNG"
+          //src="/RootLogoreal.jpg"
+          alt="Root Logo"
+          style={{
+            width: "200px",
+            height: "200px",
+            objectFit: "contain",
+          }}
+        />
+
       </div>
 
       <input
