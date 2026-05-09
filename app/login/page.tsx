@@ -47,7 +47,7 @@ export default function LoginPage() {
         }}
       >
         <img
-          src="/RootLogo.noback.PNG"
+          src="/Rootlogo.PNG"
           //src="/RootLogoreal.jpg"
           alt="Root Logo"
           style={{

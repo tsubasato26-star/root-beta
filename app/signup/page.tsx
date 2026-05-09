@@ -76,7 +76,7 @@ export default function SignupPage() {
         }}
       >
         <img
-          src="/RootLogo.noback.PNG"
+          src="/Rootlogo.PNG"
           alt="Root Logo"
           style={{
             width: "200px",
