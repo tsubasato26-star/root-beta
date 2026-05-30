@@ -47,6 +47,24 @@ export default function SignupPage() {
       if (profileError) {
         console.log(profileError)
       }
+      const { error: walletError } = await supabase.from("rs_wallets").upsert({
+  user_id: newUserId,
+  balance: 500,
+})
+
+if (walletError) {
+  console.log(walletError)
+}
+
+const { error: transactionError } = await supabase.from("rs_transactions").insert({
+  user_id: newUserId,
+  amount: 500,
+  reason: "新規登録ボーナス",
+})
+
+if (transactionError) {
+  console.log(transactionError)
+}
     }
 
     alert("新規登録成功。続けてRootの説明を見てください")
