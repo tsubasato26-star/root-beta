@@ -23,6 +23,8 @@ export default function ProfilePage() {
   const [editField, setEditField] = useState<"username" | "bio" | null>(null)
   const [editValue, setEditValue] = useState("")
   const [selectedStat, setSelectedStat] = useState<null | "level" | "days" | "logs" | "consistency">(null)
+  const [rsBalance, setRsBalance] = useState<number | null>(null)
+  const [investmentTotals, setInvestmentTotals] = useState<Record<string, number>>({})
 
   useEffect(() => {
     loadProfilePage()
@@ -98,6 +100,13 @@ export default function ProfilePage() {
       .select("*")
       .eq("user_id", pageUserId)
       .order("created_at", { ascending: false })
+      const { data: walletData } = await supabase
+  .from("rs_wallets")
+  .select("balance")
+  .eq("user_id", pageUserId)
+  .maybeSingle()
+
+setRsBalance(Number(walletData?.balance ?? 0))
 
     if (projectRowsError) {
       console.log(projectRowsError)
@@ -348,6 +357,36 @@ export default function ProfilePage() {
     await loadProfilePage()
   }
 
+    const investProject = async (project: any) => {
+    if (!currentUserId) {
+      alert("ログインが必要です")
+      return
+    }
+
+    const rawAmount = window.prompt(`${project.name} に投資するRSを入力してください`)
+    if (!rawAmount) return
+
+    const amount = Number(rawAmount)
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      alert("1以上の数字を入力してください")
+      return
+    }
+
+    const { error } = await supabase.rpc("invest_rs", {
+      target_project_id: project.id,
+      invest_amount: amount,
+    })
+
+    if (error) {
+      console.log(error)
+      alert(error.message || "投資に失敗しました")
+      return
+    }
+
+    alert("投資しました")
+    await loadProfilePage()
+  }
   const deleteVideo = async (video: any) => {
     if (!isOwnProfile) return
 
@@ -558,7 +597,7 @@ export default function ProfilePage() {
                   WebkitBackdropFilter: "blur(10px)",
                 }}
               >
-                RS --
+                RS {rsBalance ?? "--"}
               </button>
 
               <div style={{ color: "rgba(255,255,255,0.55)", fontSize: "13px" }}>
@@ -791,73 +830,118 @@ export default function ProfilePage() {
                 WebkitOverflowScrolling: "touch",
               }}
             >
-              {projects.map((project) => {
-                const meta = getProjectMeta(project.id)
-                const active = selectedProject?.id === project.id
+            {projects.map((project) => {
+  const meta = getProjectMeta(project.id)
+  const active = selectedProject?.id === project.id
 
-                
+  return (
+    <div
+      key={project.id}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        flexShrink: 0,
+      }}
+    >
+      <button
+        onClick={() => selectProject(project)}
+        style={{
+          minWidth: "220px",
+          maxWidth: "220px",
+          height: "132px",
+          textAlign: "left",
+          padding: "16px 14px",
+          borderRadius: "14px",
+          border: active
+            ? "1px solid rgba(255,255,255,0.22)"
+            : "1px solid rgba(255,255,255,0.14)",
+          background: active ? "rgba(37,99,235,0.24)" : "rgba(255,255,255,0.08)",
+          color: "white",
+          cursor: "pointer",
+          boxShadow: active
+            ? "0 10px 26px rgba(37,99,235,0.20), inset 0 1px 0 rgba(255,255,255,0.14)"
+            : "0 10px 22px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontSize: "18px",
+              fontWeight: 700,
+              lineHeight: 1.35,
+              marginBottom: "8px",
+            }}
+          >
+            <span>{project.name} </span>
+            {project.is_completed ? (
+              <span style={{ color: "#facc15" }}>★</span>
+            ) : null}
+          </div>
 
-                return (
-                  <button
-                    key={project.id}
-                    onClick={() => selectProject(project)}
-                    style={{
-                      minWidth: "220px",
-                      maxWidth: "220px",
-                      height: "132px",
-                      flexShrink: 0,
-                      textAlign: "left",
-                      padding: "16px 14px",
-                      borderRadius: "14px",
-                      border: active
-                        ? "1px solid rgba(255,255,255,0.22)"
-                        : "1px solid rgba(255,255,255,0.14)",
-                      background: active ? "rgba(37,99,235,0.24)" : "rgba(255,255,255,0.08)",
-                      color: "white",
-                      cursor: "pointer",
-                      boxShadow: active
-                        ? "0 10px 26px rgba(37,99,235,0.20), inset 0 1px 0 rgba(255,255,255,0.14)"
-                        : "0 10px 22px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.10)",
-                      backdropFilter: "blur(10px)",
-                      WebkitBackdropFilter: "blur(10px)",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div>
+          <div
+            style={{
+              fontSize: "12px",
+              lineHeight: 1.6,
+              color: "rgba(255,255,255,0.72)",
+              display: "-webkit-box",
+              WebkitLineClamp: 4,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {project.description || "説明なし"}
+          </div>
+        </div>
 
+        <div
+          style={{
+            fontSize: "11px",
+            color: "rgba(255,255,255,0.68)",
+            lineHeight: 1.55,
+          }}
+        >
+          <div>作成日: {formatDate(project.created_at)}</div>
 
-                      <div style={{ fontSize: "18px", fontWeight: 700, lineHeight: 1.35, marginBottom: "8px" }}>
-                        <span>{project.name} </span>
-                        {project.is_completed ? <span style={{ color: "#facc15" }}>★</span> : null}
-                      </div>
+          <div>
+            {project.is_completed ? "完成扱い" : "最終更新"}:
+            {" "}
+            {formatDate(meta.latestDate || project.created_at)}
+          </div>
 
-                      <div
-                        style={{
-                          fontSize: "12px",
-                          lineHeight: 1.6,
-                          color: "rgba(255,255,255,0.72)",
-                          display: "-webkit-box",
-                          WebkitLineClamp: 4,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {project.description || "説明なし"}
-                      </div>
-                    </div>
+          <div>投稿数: {meta.videoCount}</div>
 
-                    <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.68)", lineHeight: 1.55 }}>
-                      <div>作成日: {formatDate(project.created_at)}</div>
-                      <div>{project.is_completed ? "完成扱い" : "最終更新"}: {formatDate(meta.latestDate || project.created_at)}</div>
-                      <div>投稿数: {meta.videoCount}</div>
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
-          )}
+          <div>
+            投資総額: {investmentTotals[project.id] || 0} RS
+          </div>
+        </div>
+      </button>
+
+      <button
+        onClick={() => investProject(project)}
+        style={{
+          minWidth: "220px",
+          maxWidth: "220px",
+          padding: "10px 12px",
+          borderRadius: "999px",
+          border: "1px solid rgba(255,255,255,0.18)",
+          background: "linear-gradient(135deg, #2563eb, #38bdf8)",
+          color: "white",
+          cursor: "pointer",
+          fontWeight: 700,
+          boxShadow: "0 10px 30px rgba(59,130,246,0.22)",
+        }}
+      >
+        RSを投資
+      </button>
+    </div>
+   )
+})}
 
           {selectedProject ? (
             <button
@@ -878,6 +962,8 @@ export default function ProfilePage() {
               プロジェクト絞り込みを解除
             </button>
           ) : null}
+            </div>
+          )}
         </div>
 
         {videos.length === 0 ? (
