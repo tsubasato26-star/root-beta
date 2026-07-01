@@ -70,24 +70,24 @@ export default function ProfilePage() {
       .maybeSingle()
 
     if (!profileData && currentUser && pageUserId === currentUser.id) {
-      const fallbackUsername =
-        currentUser.email?.split("@")[0] || `user_${currentUser.id.slice(0, 6)}`
+  const fallbackUsername =
+    currentUser.email?.split("@")[0] || `user_${currentUser.id.slice(0, 6)}`
 
-      await supabase.from("profiles").upsert({
-        id: currentUser.id,
-        username: fallbackUsername,
-        bio: "",
-      })
+  await supabase.from("profiles").upsert({
+    id: currentUser.id,
+    username: fallbackUsername,
+    bio: "",
+  })
 
-      const { data: insertedProfile } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", pageUserId)
-        .maybeSingle()
+  const { data: insertedProfile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", pageUserId)
+    .maybeSingle()
 
-      profileData = insertedProfile
-      profileError = null
-    }
+  profileData = insertedProfile
+  profileError = null
+}
 
     if (profileError) {
       console.log(profileError)
